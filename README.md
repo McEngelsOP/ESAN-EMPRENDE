@@ -52,3 +52,7 @@ El flujo de acceso se implementó, pero todavía no se han realizado pruebas con
 Completar el hook de Supabase **Before User Created**, aplicar y validar las políticas RLS, añadir almacenamiento privado de imágenes, perfiles y productos persistentes y métricas con control de duplicados. Añadir moderación y políticas de privacidad. Conectar el repositorio a Vercel u otro alojamiento.
 
 La aplicación restringe el catálogo a sesiones institucionales; los datos siguen siendo de demostración. No hay pagos, pedidos ni ventas verificadas. No hay integración oficial con la universidad.
+
+## Despliegue en Vercel
+
+Conecta el repositorio raíz (`/`) como aplicación Next.js, sin sobrescribir el directorio de salida. Los despliegues deben construirse desde nuevos commits de `main`: volver a desplegar una versión creada con el framework `Other` conserva ese override histórico y puede publicar assets estáticos sin sus rutas dinámicas de Next.js.
