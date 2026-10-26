@@ -41,13 +41,17 @@ npm test
 
 ## Qué puedes probar
 
-- Buscar, filtrar y ordenar los productos de ejemplo.
-- Explorar emprendimientos y detalles de productos.
+- Buscar, filtrar y ordenar las propuestas de ejemplo, o entrar desde el directorio de categorías.
+- Explorar perfiles de emprendimientos con su catálogo completo; cada negocio aparece una sola vez en el directorio.
+- Recorrer cuatro destacados con selección manual y avance automático cada 6 segundos. El carrusel permite pausar/reproducir, se detiene al pasar el cursor y queda pausado al recibir foco. Inicia sin avance automático si se prefiere movimiento reducido; se puede reproducir expresamente. También se detiene cuando la pestaña está oculta.
 - Guardar favoritos; se conservan al recargar.
-- Abrir Mi negocio, publicar un producto local, pausarlo, reactivarlo o eliminarlo.
+- Abrir Mi negocio, publicar un producto, servicio o idea local, pausar su disponibilidad, reactivarlo o eliminarlo.
+- Ver ejemplos de páginas web, automatización e ideas que buscan colaboradores, además de productos físicos. Las propuestas sin precio muestran «A cotizar» y las ideas «Busco colaboradores».
 - Cambiar el período de estadísticas ilustrativas.
 
-Favoritos y publicaciones se guardan solo en localStorage del navegador. Limpiar los datos del sitio los elimina. Los datos demo son locales a la cuenta del navegador; el catálogo inicial es ficticio y la imagen de demostración es pública. Los botones de contacto explican que aún no hay canales reales. No introduzcas información privada ni real.
+Los destacados y el orden «Selección del catálogo» son una selección ilustrativa, no un ranking de ventas o popularidad.
+
+Favoritos y publicaciones se guardan solo en localStorage del navegador. Limpiar los datos del sitio los elimina. Los datos demo son locales a la cuenta del navegador; el catálogo inicial es ficticio y las imágenes son de demostración. El formulario permite elegir imágenes de ejemplo; no admite subir fotos propias. Esta ampliación no añade backend ni persistencia compartida. Los botones de contacto explican que aún no hay canales reales. No introduzcas información privada ni real.
 
 El flujo de acceso se implementó, pero todavía no se han realizado pruebas con un correo real.
 
@@ -55,7 +59,7 @@ El flujo de acceso se implementó, pero todavía no se han realizado pruebas con
 
 Completar el hook de Supabase **Before User Created**, aplicar y validar las políticas RLS, añadir almacenamiento privado de imágenes, perfiles y productos persistentes y métricas con control de duplicados. Añadir moderación y políticas de privacidad. Conectar el repositorio a Vercel u otro alojamiento.
 
-La aplicación restringe el catálogo a sesiones institucionales; los datos siguen siendo de demostración. No hay pagos, pedidos ni ventas verificadas. No hay integración oficial con la universidad.
+En esta fase el catálogo abre sin sesión; el acceso institucional queda deshabilitado y los datos siguen siendo de demostración. No hay pagos, pedidos ni ventas verificadas. No hay integración oficial con la universidad.
 
 ## Despliegue en Vercel
 
