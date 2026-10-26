@@ -8,33 +8,25 @@ test('política: dominio exacto y correo confirmado',()=>{
  expect(allowedUser({email:'a@gmail.com',email_confirmed_at:'2026-10-26'})).toBe(false);
  expect(allowedUser(null)).toBe(false);
 });
-test('catálogo privado sin sesión, incluso con cookie inventada',async({page,context})=>{
- await context.addCookies([{name:'esan-session',value:'true',domain:'127.0.0.1',path:'/'}]);
- await page.goto('/');await expect(page).toHaveURL(/\/acceso$/);
- await expect(page.getByRole('heading',{name:'Tu comunidad. Tu próximo descubrimiento.'})).toBeVisible();
- await expect(page.locator('.product-card')).toHaveCount(0);
+test('interfaz abierta sin login y rutas de acceso regresan al catálogo',async({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.product-card')).toHaveCount(6);
+ await expect(page.getByRole('button',{name:'Cerrar sesión'})).toHaveCount(0);
+ await page.goto('/acceso');await expect(page).toHaveURL('/');
+ await page.goto('/auth/callback?code=invalid');await expect(page).toHaveURL('/');
+ await expect(page.locator('.product-card')).toHaveCount(6);
 });
-test('correo externo rechazado en servidor sin enviar email',async({page})=>{
- await page.goto('/acceso');await page.getByLabel('Correo institucional').fill('alguien@gmail.com');
- await page.getByRole('button',{name:'Recibir enlace de acceso'}).click();
- await expect(page.locator('.access-error')).toContainText('terminado en @ue.edu.pe');
- await expect(page.getByRole('button',{name:'Recibir enlace de acceso'})).toBeEnabled();
-});
-test('callback inválido y redirección externa rechazados',async({page})=>{
- await page.goto('/auth/callback?next=https://example.com');
- await expect(page).toHaveURL(/\/acceso\?error=expired$/);
- await expect(page.locator('.access-error')).toContainText('El enlace venció');
-});
-test('cierre de sesión requiere POST del mismo origen',async({request})=>{
- expect((await request.get('/auth/salir')).status()).toBe(405);
- expect((await request.post('/auth/salir',{headers:{origin:'https://example.com'}})).status()).toBe(403);
- const response=await request.post('/auth/salir',{headers:{origin:'http://127.0.0.1:3000'},maxRedirects:0});
- expect(response.status()).toBe(303);expect(response.headers().location).toContain('/acceso');
-});
-test('acceso adaptable y sin errores de cliente',async({page},info)=>{
- const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('/acceso');await page.evaluate(()=>document.fonts.ready);
- await expect(page.getByLabel('Correo institucional')).toBeVisible();
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- expect(errors).toEqual([]);await page.screenshot({path:`/tmp/esan-access-${info.project.name}.png`,fullPage:true});
+test('explorar y publicar en el panel sin cuenta',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('textbox',{name:'Buscar en el catálogo'}).fill('Cookies');
+ await expect(page.locator('.product-card')).toHaveCount(1);
+ await page.getByRole('button',{name:'Mi negocio'}).click();
+ await page.getByRole('button',{name:'Publicar producto',exact:true}).click();
+ await page.getByLabel('Nombre del producto').fill('Brownies de prueba');
+ await page.getByLabel('Precio (S/)').fill('18');
+ await page.getByLabel('Descripción').fill('Brownies artesanales para la demo de interfaz.');
+ await page.getByRole('button',{name:'Publicar en la demo'}).click();
+ await expect(page.locator('.seller-list')).toContainText('Brownies de prueba');
+ await page.reload();await page.getByRole('button',{name:'Mi negocio'}).click();
+ await expect(page.locator('.seller-list')).toContainText('Brownies de prueba');
 });

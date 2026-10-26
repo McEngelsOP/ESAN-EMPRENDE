@@ -1,3 +1,4 @@
+import { AUTH_ENABLED } from '@/lib/project-phase';
 import { ShoppingBag, ShieldCheck } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import AccessForm from '@/components/access-form';
@@ -6,6 +7,7 @@ import { allowedUser } from '@/lib/auth-policy';
 export const dynamic='force-dynamic';
 const errors:Record<string,string>={expired:'El enlace venció o ya fue utilizado. Solicita uno nuevo para continuar.',domain:'El acceso requiere un correo confirmado de @ue.edu.pe.',unavailable:'No pudimos verificar el acceso. Inténtalo más tarde.'};
 export default async function AccessPage({searchParams}:{searchParams:Promise<{error?:string}>}){
+ if(!AUTH_ENABLED)redirect('/');
  const client=await supabaseServer();
  if(client){const {data:{user}}=await client.auth.getUser();if(allowedUser(user))redirect('/')}
  const {error}=await searchParams;

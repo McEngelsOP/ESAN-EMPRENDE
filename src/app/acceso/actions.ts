@@ -1,9 +1,11 @@
 'use server';
+import { AUTH_ENABLED } from '@/lib/project-phase';
 import { headers, cookies } from 'next/headers';
 import { supabaseServer } from '@/lib/supabase/server';
 import { institutionalEmail } from '@/lib/auth-policy';
 export type AccessState = {status:'idle'|'error'|'sent';message:string;email?:string};
 export async function requestAccess(_previous:AccessState, form:FormData):Promise<AccessState>{
+  if(!AUTH_ENABLED)return {status:'error',message:'El inicio de sesión está deshabilitado mientras preparamos la interfaz.'};
   const email=institutionalEmail(String(form.get('email')||''));
   if(!email)return {status:'error',message:'Usa tu correo institucional completo, terminado en @ue.edu.pe.'};
   const client=await supabaseServer();

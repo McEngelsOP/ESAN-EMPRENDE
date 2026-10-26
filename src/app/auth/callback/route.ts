@@ -1,7 +1,9 @@
+import { AUTH_ENABLED } from '@/lib/project-phase';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { allowedUser } from '@/lib/auth-policy';
 export async function GET(request:NextRequest){
+ if(!AUTH_ENABLED)return new NextResponse(null,{status:303,headers:{Location:'/'}});
  const code=request.nextUrl.searchParams.get('code');
  const client=await supabaseServer();
  if(!code||!client)return new NextResponse(null,{status:303,headers:{Location:'/acceso?error=expired','Cache-Control':'private, no-store'}});

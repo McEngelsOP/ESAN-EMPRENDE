@@ -2,6 +2,10 @@
 
 Prototipo navegable de un catálogo de emprendimientos para estudiantes de ESAN. Construido con Next.js, TypeScript y React. Interfaz en español y precios en soles.
 
+## Fase actual: interfaz sin login
+
+El catálogo y el panel abren directamente en `/`. El login se pospone hasta el final mediante `AUTH_ENABLED=false` en `src/lib/project-phase.ts`; `/acceso` vuelve al catálogo y se bloquea el envío de enlaces. No hace falta Supabase para explorar la interfaz. Todos los datos siguen siendo ejemplos locales al navegador.
+
 ## Desarrollo
 
 Requiere Node.js 20.9 o posterior y npm.

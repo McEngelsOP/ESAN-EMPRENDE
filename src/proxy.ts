@@ -1,9 +1,11 @@
+import { AUTH_ENABLED } from '@/lib/project-phase';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { supabaseConfig } from '@/lib/supabase/config';
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({request});
   response.headers.set('Cache-Control','private, no-store');
+  if (!AUTH_ENABLED) return response;
   const config = supabaseConfig();
   if (!config) return response;
   const client = createServerClient(config.url,config.key,{cookies:{
