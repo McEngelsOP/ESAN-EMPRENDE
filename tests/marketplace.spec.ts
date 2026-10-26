@@ -44,7 +44,8 @@ test('explorar y publicar en el panel sin cuenta',async({page})=>{
 
 test('categoría → perfil completo, sin filtros heredados ni tiendas duplicadas',async({page})=>{
  await page.goto('/');
- await page.locator('.category-directory').getByRole('button',{name:/Soluciones tech/}).click();
+ if((page.viewportSize()?.width||1440)<=760)await page.locator('.categories').getByRole('button',{name:'Soluciones tech',exact:true}).click();
+ else await page.locator('.category-directory').getByRole('button',{name:/Soluciones tech/}).click();
  await expect(page.locator('.product-card')).toHaveCount(3);
  await expect(page.locator('.featured')).toHaveCount(0);
  await page.locator('.product-card').filter({hasText:'Tu primera página web'}).getByRole('button',{name:'Nodo Studio'}).click();
@@ -148,4 +149,28 @@ test('servicio a cotizar, borrador descartable y vista adaptable',async({page},i
  await page.getByRole('button',{name:'Cancelar',exact:true}).click();
  await page.getByRole('button',{name:'Descartar cambios'}).click();
  await expect(page.locator('.seller-row')).toHaveCount(0);
+});
+
+test('imágenes adaptables y controles móviles accesibles',async({page},info)=>{
+ const requested:string[]=[];page.on('request',r=>requested.push(r.url()));
+ await page.goto('/');
+ const hero=page.locator('.feature-visual img');
+ await expect(hero).toBeVisible();
+ await expect.poll(()=>hero.evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+ await expect(hero).toHaveAttribute('srcset',/w=/);
+ await expect(page.locator('.product-card img').first()).toHaveAttribute('loading','lazy');
+ expect(requested.some(u=>u.includes('products-sheet.png'))).toBe(false);
+ const pause=page.getByRole('button',{name:'Pausar destacados',exact:true});
+ if(await pause.count())await pause.click();
+ const photo=page.locator('.product-card img').first();await photo.scrollIntoViewIfNeeded();
+ await expect.poll(()=>photo.evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+ expect(await photo.evaluate(img=>getComputedStyle(img).objectFit)).toBe('cover');
+ const favorite=await page.locator('.favorite').first().boundingBox();
+ expect(favorite!.width).toBeGreaterThanOrEqual(44);expect(favorite!.height).toBeGreaterThanOrEqual(44);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.evaluate(()=>window.scrollTo(0,0));
+ await page.evaluate(()=>document.fonts.ready);
+ if(info.project.name==='mobile'){const choices=await page.locator('.feature-choices').boundingBox();expect(choices!.height).toBeLessThanOrEqual(80);}
+ await page.screenshot({path:`/tmp/esan-optimized-${info.project.name}.png`,fullPage:true});
+ if(info.project.name==='mobile'){await page.setViewportSize({width:320,height:700});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/esan-optimized-narrow.png',fullPage:true});}
 });

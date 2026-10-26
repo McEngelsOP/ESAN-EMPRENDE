@@ -68,3 +68,7 @@ Conecta el repositorio raíz (`/`) como aplicación Next.js, sin sobrescribir el
 ## Flujo de vendedor local
 
 En Mi negocio crea el perfil del emprendimiento. Después usa Nueva publicación: Producto pide entrega, Servicio pide alcance y plazo, e Idea pide etapa y colaboradores. Revisar publicación abre una vista previa sin guardar; confirma allí o vuelve a editar. Las publicaciones pueden editarse, pausarse o eliminarse (con confirmación). El perfil se puede renombrar conservando las publicaciones. Ver mi perfil muestra la tienda incluso sin publicaciones. Todo se conserva solo en este navegador. Las imágenes y canales de contacto siguen siendo referencias de la demo; las estadísticas aparecerán al implementar medición real.
+
+## Recursos fotográficos
+
+Las seis imágenes WebP en `public/images/demo-v1/` suman 195.216 bytes (antes se descargaba una lámina PNG de 2.701.817 bytes). Son tamaños de archivos, no una medición de Lighthouse. Next/Image selecciona tamaños de pantalla y carga diferida para el catálogo. El original se conserva en `assets/source/`; `npm run prepare:images` regenera los derivados. Si se cambia su contenido, usar un directorio versionado nuevo, porque `demo-v1` tiene caché inmutable. El sitio sigue sin login y con datos locales de demo.

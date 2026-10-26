@@ -25,3 +25,6 @@ La publicación local añade el tipo producto, servicio o idea y permite elegir 
 
 ## Mi negocio y editor
 El panel operativo prioriza perfil y publicaciones. El perfil usa una superficie verde suave; los formularios tienen etiquetas visibles y controles de 44 px o más. Crear y editar comparten el mismo editor, con dos pasos: Preparar y Revisar. En escritorio separa contenido e imagen en dos columnas; en móvil se apilan. El detalle de vista previa usa la misma identidad del catálogo. Eliminar requiere confirmación junto a la publicación; abandonar el editor por su acción Volver/Cancelar pide confirmar si hay cambios. La información comercial sigue siendo de demo local.
+
+## Rendimiento y móvil
+Las fotografías de referencia ahora se publican separadas en WebP (demo-v1), con Next/Image, tamaños responsivos y object-fit cover para conservar proporciones. Solo la foto inicial de destacados se precarga; las tarjetas inferiores y miniaturas usan carga diferida. Los derivados tienen caché inmutable; la lámina original se conserva fuera de public. En móvil, el destacado tiene una foto y un texto más compactos; la selección de emprendimientos es horizontal. Las categorías se muestran en chips, sin repetir el directorio de escritorio. Favoritos, controles de carrusel y navegación tienen superficies de al menos 44 px. El buscador ocupa una fila completa.
