@@ -9,3 +9,16 @@ Catálogo fotográfico, filtros visibles, búsqueda inmediata y favoritos accesi
 Modo Operate. `/acceso` hereda la identidad del catálogo: presentación breve a la izquierda y formulario por enlace a la derecha; en móvil el formulario sigue al texto sin fotografía. Incluye espera, fallo, confirmación de envío y errores de enlace vencido. Etiqueta de correo visible, feedback anunciado y botón deshabilitado durante envío. La pantalla raíz valida sesión antes de renderizar el catálogo. El formulario no pide contraseña ni ofrece acceso público.
 
 La fase de interfaz deja el acceso deshabilitado: el catálogo abre directamente, sin indicador de sesión activa ni botón de cierre. La banda superior identifica la vista previa y los datos de demostración.
+
+
+## Components
+
+### Extensión del catálogo y destacados
+
+Esta ampliación conserva la identidad clara con acento rojo, las tipografías, los tokens CSS y los patrones de tarjetas y controles existentes. La referencia al escaparate de Epic se limita a la organización de un destacado grande con una lista de opciones; no sustituye la identidad del catálogo por un tema oscuro.
+
+El escaparate combina una propuesta principal con cuatro opciones seleccionables y controles anterior, siguiente y pausa/reproducción. Avanza cada 6 segundos mientras está activo; el cursor lo detiene temporalmente y recibir foco lo deja pausado hasta reproducirlo expresamente. Con movimiento reducido comienza sin avance automático y mantiene la navegación manual; también pausa al ocultarse la pestaña. Los destacados y la selección del catálogo son ilustrativos, sin ranking ni ventas registradas.
+
+El directorio de categorías muestra cantidades de propuestas y conduce al catálogo filtrado. El directorio de emprendimientos agrupa por negocio para evitar duplicados. Cada perfil presenta creador, descripción, categorías y su catálogo completo de productos, servicios e ideas; búsqueda y filtros permiten explorar ese catálogo. Las fichas conservan fotografía para productos físicos y usan ilustraciones con iconos para soluciones digitales e ideas. Las ideas muestran «Busco colaboradores» y las propuestas sin precio «A cotizar».
+
+La publicación local añade el tipo producto, servicio o idea y permite elegir imágenes de ejemplo. Contacto, subida de imágenes propias, ventas y persistencia compartida siguen pendientes; los botones de contacto muestran un aviso de demostración. Las estadísticas del panel también siguen siendo ilustrativas.
