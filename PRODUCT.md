@@ -9,3 +9,6 @@ Siguiente fase: completar la restricción de altas por dominio, RLS, Storage pri
 
 ## Prioridad actual
 Por indicación del usuario, el inicio de sesión se pospone hasta el final. AUTH_ENABLED=false en src/lib/project-phase.ts permite explorar la interfaz en / sin consultas Auth; /acceso y el callback vuelven a /. La demo utiliza el espacio local interface-preview, separado de los datos por cuenta anteriores. Primero completar catálogo, emprendimientos y panel del vendedor. No conectar datos privados durante esta fase pública.
+
+## Espacio del vendedor
+El panel permite crear y editar un perfil local (nombre, autor, descripción, coordinación y contacto de referencia). Crear publicaciones requiere un perfil. Los productos, servicios e ideas tienen campos específicos, un paso de vista previa y edición posterior conservando el ID. Renombrar el perfil actualiza las publicaciones propias. La eliminación pide confirmación. Los perfiles previos de ejemplo siguen siendo de solo lectura. Se conservan las publicaciones locales antiguas por su prefijo local-. Las métricas inventadas se sustituyeron por un estado pendiente de medición. Ningún dato se sincroniza con Supabase ni otros navegadores.

@@ -64,3 +64,7 @@ En esta fase el catálogo abre sin sesión; el acceso institucional queda deshab
 ## Despliegue en Vercel
 
 Conecta el repositorio raíz (`/`) como aplicación Next.js, sin sobrescribir el directorio de salida. Los despliegues deben construirse desde nuevos commits de `main`: volver a desplegar una versión creada con el framework `Other` conserva ese override histórico y puede publicar assets estáticos sin sus rutas dinámicas de Next.js.
+
+## Flujo de vendedor local
+
+En Mi negocio crea el perfil del emprendimiento. Después usa Nueva publicación: Producto pide entrega, Servicio pide alcance y plazo, e Idea pide etapa y colaboradores. Revisar publicación abre una vista previa sin guardar; confirma allí o vuelve a editar. Las publicaciones pueden editarse, pausarse o eliminarse (con confirmación). El perfil se puede renombrar conservando las publicaciones. Ver mi perfil muestra la tienda incluso sin publicaciones. Todo se conserva solo en este navegador. Las imágenes y canales de contacto siguen siendo referencias de la demo; las estadísticas aparecerán al implementar medición real.

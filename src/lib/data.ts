@@ -1,4 +1,4 @@
-export type Product = { id: string; name: string; store: string; owner: string; category: string; price: number; image: string; description: string; available: boolean; kind?: 'Producto' | 'Servicio' | 'Idea' };
+export type Product = { id: string; name: string; store: string; owner: string; category: string; price: number; image: string; description: string; available: boolean; kind?: 'Producto' | 'Servicio' | 'Idea'; fulfillment?: string; scope?: string; timeline?: string; collaborators?: string; stage?: string };
 export const categories = ['Todos', 'Comida y bebidas', 'Moda y accesorios', 'Arte y papelería', 'Hogar y bienestar', 'Soluciones tech', 'Servicios'];
 export const initialProducts: Product[] = [
  { id:'cookies', name:'Cookies de chocolate', store:'Miga & Mood', owner:'Valeria', category:'Comida y bebidas', price:12, image:'/images/cookies.jpg', description:'Crujientes por fuera, suaves por dentro. Cookies artesanales con trozos de chocolate. Pack de 3 unidades, preparadas a pedido. Coordina la entrega en el campus con el emprendimiento.', available:true },
