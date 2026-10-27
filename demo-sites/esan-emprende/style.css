@@ -76,3 +76,11 @@ dialog{max-height:90vh;max-height:90dvh;overflow:hidden}
 .rating-choice input:focus-visible+span.rating-choice-icon{outline:3px solid var(--red);outline-offset:0}
 @media(hover:hover){.rating-choice label:hover .rating-choice-icon svg{transform:scale(1.12)}}
 :root[data-theme=dark] .rating-choice label>span.rating-choice-icon,:root[data-theme=dark] .rating-choice input:checked+span.rating-choice-icon{color:var(--ink)}
+
+/* Ajustes: listas agrupadas para visitante y cuenta de prueba. */
+.settings-layout{display:grid;grid-template-columns:minmax(0,660px) minmax(220px,320px);gap:32px;align-items:start}
+.settings-group+.settings-group{margin-top:30px}.settings-group h2{font-size:18px;margin:0 0 12px 6px;letter-spacing:-.02em}
+.settings-list{background:var(--card);border-radius:var(--radius);padding:4px 18px}
+.settings-row{width:100%;min-height:70px;display:flex;align-items:center;gap:14px;background:transparent;border:0;border-bottom:1px solid var(--line);text-align:left;padding:12px 0;color:var(--ink)}
+.settings-row:last-child{border:0}.settings-row>span:nth-child(2){flex:1;min-width:0}.settings-row strong,.settings-row small{display:block}.settings-row small{color:var(--muted);margin-top:2px}.settings-icon{width:44px;height:44px;display:grid;place-items:center;background:var(--paper);border-radius:14px;flex:none}.settings-value{color:var(--muted);font-size:13px}.settings-row>svg{width:17px;flex:none;color:var(--muted)}.settings-note{background:var(--card);border-radius:var(--radius);padding:24px}.settings-note p{font-size:13px;margin-top:12px}
+@media(max-width:650px){.settings-layout{grid-template-columns:1fr;gap:20px}.settings-list{padding:4px 14px}.settings-note{padding:20px}}
