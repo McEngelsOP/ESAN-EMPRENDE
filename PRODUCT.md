@@ -1,14 +1,23 @@
 # ESAN Emprende
-Catálogo privado de emprendimientos para estudiantes de ESAN. Dominio institucional indicado por el usuario: `ue.edu.pe`. Sin carrito, pagos ni pedidos. Cada estudiante tendrá un emprendimiento, productos y estadísticas de interés. Las ventas se coordinan fuera del sitio.
 
-La fase actual incluye acceso por enlace mágico de Supabase Auth con PKCE. El callback intercambia el código y la página raíz valida en servidor con `getUser` que el correo esté confirmado y termine en `@ue.edu.pe`; el cierre de sesión se procesa por POST. El proveedor Email está habilitado y la confirmación automática desactivada. El hook **Before User Created** para rechazar altas con otros dominios sigue pendiente, la función y los pasos de activación están en [docs/supabase-auth.md](docs/supabase-auth.md).
+Vitrina de productos, servicios e ideas para la comunidad estudiantil de ESAN. Dominio institucional previsto: ue.edu.pe. La venta o colaboración se coordina directamente con cada emprendimiento. No hay carrito, pagos ni gestión de pedidos. Proyecto independiente, sin afiliación institucional oficial confirmada.
 
-El catálogo sigue siendo una demo: favoritos y publicaciones son datos locales del navegador/cuenta, los nombres, productos, precios y estadísticas son ejemplos, y la imagen de demostración es pública. No guardar información privada ni presentar los datos como persistencia real. Las pruebas con correo real aún no se han realizado. No existe afiliación institucional oficial confirmada.
+## Aplicación activa
 
-Siguiente fase: completar la restricción de altas por dominio, RLS, Storage privado, CRUD persistente y eventos reales. Confirmar el proveedor institucional antes de SSO. Vercel es la opción propuesta para despliegue, todavía sin conexión.
+Next.js/React/TypeScript en la raíz del repositorio, desplegada desde main en Vercel. La demo HTML en demo-sites/esan-emprende es una referencia histórica independiente, no el objetivo del build. La versión descargable de public/downloads se genera con los mismos componentes React mediante npm run export:html.
 
-## Prioridad actual
-Por indicación del usuario, el inicio de sesión se pospone hasta el final. AUTH_ENABLED=false en src/lib/project-phase.ts permite explorar la interfaz en / sin consultas Auth; /acceso y el callback vuelven a /. La demo utiliza el espacio local interface-preview, separado de los datos por cuenta anteriores. Primero completar catálogo, emprendimientos y panel del vendedor. No conectar datos privados durante esta fase pública.
+## Fase actual
 
-## Espacio del vendedor
-El panel permite crear y editar un perfil local (nombre, autor, descripción, coordinación y contacto de referencia). Crear publicaciones requiere un perfil. Los productos, servicios e ideas tienen campos específicos, un paso de vista previa y edición posterior conservando el ID. Renombrar el perfil actualiza las publicaciones propias. La eliminación pide confirmación. Los perfiles previos de ejemplo siguen siendo de solo lectura. Se conservan las publicaciones locales antiguas por su prefijo local-. Las métricas inventadas se sustituyeron por un estado pendiente de medición. Ningún dato se sincroniza con Supabase ni otros navegadores.
+Interfaz abierta con AUTH_ENABLED=false, por instrucción del usuario: el login queda para el final. No introducir información privada. Los datos iniciales, precios y disponibilidad son ejemplos. Las propuestas propias se guardan localmente por espacio de navegador, no se sincronizan con Supabase.
+
+Inicio editorial con destacados y categorías; Explorar con búsqueda normalizada por acentos, tipo, categoría, disponibilidad y precio; directorio/perfiles; favoritos; reseñas locales no verificadas; tema claro/oscuro y Ajustes con exportación/importación JSON. La navegación con hash conserva vistas/filtros e historial.
+
+Mi negocio permite crear/editar el perfil, logo y portada, canales opcionales WhatsApp/correo/red social, y gestionar publicaciones con campos por tipo. Hay imágenes propias locales, vista previa, edición estable, pausa y eliminación confirmada. El panel no muestra métricas ficticias como resultados reales; la medición sigue pendiente. Los perfiles de ejemplo no inventan contactos. Los canales propios se abren externamente y no envían mensajes automáticamente.
+
+## Compatibilidad
+
+Se preservan las claves actuales y las legacy de la demo HTML. En la vista previa, se importa una vez la clave standalone-preview del mismo origen, conservando IDs, campos adicionales, estado y reseñas. Ajustes permite trasladar datos entre orígenes por JSON; la web no puede leer almacenamiento de otros dominios. Los datos corruptos no se sobrescriben automáticamente. Más detalles: docs/rea-ui-integration.md.
+
+## Pendiente antes de un piloto real
+
+Reactivar y verificar Auth institucional, completar el hook de restricción de altas, crear persistencia compartida y políticas RLS por propietario, almacenamiento privado, moderación/reportes, privacidad y analítica real. Confirmar proveedor de identidad antes de SSO. La configuración Supabase se conserva, pero no valida por sí sola un login completo con una cuenta estudiantil real.

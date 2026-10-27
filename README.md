@@ -1,74 +1,59 @@
 # ESAN Emprende
 
-Prototipo navegable de un catálogo de emprendimientos para estudiantes de ESAN. Construido con Next.js, TypeScript y React. Interfaz en español y precios en soles.
+Vitrina estudiantil de productos, servicios e ideas. Aplicación Next.js con React, TypeScript y Supabase Auth preparado para una fase posterior. Los datos de esta versión son locales y de demostración. El login sigue desactivado por decisión del usuario.
 
-## Fase actual: interfaz sin login
+## Aplicación que se construye y despliega
 
-El catálogo y el panel abren directamente en `/`. El login se pospone hasta el final mediante `AUTH_ENABLED=false` en `src/lib/project-phase.ts`; `/acceso` vuelve al catálogo y se bloquea el envío de enlaces. No hace falta Supabase para explorar la interfaz. Todos los datos siguen siendo ejemplos locales al navegador.
-
-## Desarrollo
-
-Requiere Node.js 20.9 o posterior y npm.
+Vercel usa el package.json de la raíz, el preset Next.js y `npm run build`. La entrada es src/app/page.tsx. El directorio `demo-sites/esan-emprende/` contiene una demo HTML independiente que se inspeccionó y usó como referencia funcional; no sustituye al proyecto Next.js.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-La autenticación usa Supabase con enlace mágico por correo y PKCE. Configura estas variables de entorno en `.env.local`:
-
-```dotenv
-NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable-or-anon-key>
-```
-
-El valor de URL puede ser el origen del proyecto o la URL de Data API que termina en `/rest/v1`; la aplicación la normaliza al origen. No uses una clave `service_role` en variables `NEXT_PUBLIC_*`.
-
-En Supabase Auth, habilita el proveedor Email y deja desactivado **Confirm email autoconfirm** para exigir verificación. Configura **Site URL** para el origen local (`http://localhost:3000`) durante desarrollo y para el dominio de producción al desplegar. Añade como Redirect URLs `http://localhost:3000/auth/callback` y `https://<dominio-de-produccion>/auth/callback`. El template de confirmación debe enlazar con `{{ .ConfirmationURL }}` para completar el callback de Supabase.
-
-La aplicación valida la sesión en servidor y permite el acceso solo cuando `getUser` confirma un correo verificado bajo `ue.edu.pe`. El hook **Before User Created** para rechazar otros dominios todavía está pendiente. Las instrucciones SQL y la configuración restante se documentan en [docs/supabase-auth.md](docs/supabase-auth.md).
-
-## Comprobaciones
+Node.js 20.9 o posterior. Para comprobar el proyecto:
 
 ```sh
-npm run typecheck
 npm run build
-npm run start
+npm run typecheck
 npm test
 ```
 
-`npm test` ejecuta pruebas funcionales con Playwright contra un servidor de producción en el puerto 3000; primero ejecutar build. El navegador de pruebas se obtiene del paquete npm `@sparticuz/chromium`, sin descarga adicional.
+Playwright comprueba escritorio y móvil con @sparticuz/chromium y arranca un servidor de producción temporal en el puerto 3000 si está libre. No hace falta descargar otro navegador.
 
-## Qué puedes probar
+## Funciones de esta versión
 
-- Buscar, filtrar y ordenar las propuestas de ejemplo, o entrar desde el directorio de categorías.
-- Explorar perfiles de emprendimientos con su catálogo completo; cada negocio aparece una sola vez en el directorio.
-- Recorrer cuatro destacados con selección manual y avance automático cada 6 segundos. El carrusel permite pausar/reproducir, se detiene al pasar el cursor y queda pausado al recibir foco. Inicia sin avance automático si se prefiere movimiento reducido; se puede reproducir expresamente. También se detiene cuando la pestaña está oculta.
-- Guardar favoritos; se conservan al recargar.
-- Abrir Mi negocio, publicar un producto, servicio o idea local, pausar su disponibilidad, reactivarlo o eliminarlo.
-- Ver ejemplos de páginas web, automatización e ideas que buscan colaboradores, además de productos físicos. Las propuestas sin precio muestran «A cotizar» y las ideas «Busco colaboradores».
-- Cambiar el período de estadísticas ilustrativas.
+- Inicio con destacados seleccionables, pausa y movimiento reducido.
+- Búsqueda por nombre, creador, descripción, categoría y marca, sin distinguir acentos.
+- Filtros de tipo, categoría y disponibilidad, con orden por precio.
+- Perfiles de emprendimientos, favoritos y reseñas locales no verificadas.
+- Perfil propio con logo/portada, canales opcionales, creación/edición de propuestas e imágenes locales.
+- Campos para productos, servicios e ideas; vista previa antes de guardar; pausa y eliminación confirmada.
+- Tema claro/oscuro, historial y enlaces con filtros.
+- Ajustes con respaldo JSON e importación que conserva registros existentes por ID.
 
-Los destacados y el orden «Selección del catálogo» son una selección ilustrativa, no un ranking de ventas o popularidad.
+El almacenamiento es local al navegador. No se procesan pagos, pedidos ni entregas; los enlaces configurados abren servicios externos. Los perfiles de ejemplo no contienen contactos inventados. No añadir datos privados mientras la demo esté abierta.
 
-Favoritos y publicaciones se guardan solo en localStorage del navegador. Limpiar los datos del sitio los elimina. Los datos demo son locales a la cuenta del navegador; el catálogo inicial es ficticio y las imágenes son de demostración. El formulario permite elegir imágenes de ejemplo; no admite subir fotos propias. Esta ampliación no añade backend ni persistencia compartida. Los botones de contacto explican que aún no hay canales reales. No introduzcas información privada ni real.
+## Referencias y adaptación
 
-El flujo de acceso se implementó, pero todavía no se han realizado pruebas con un correo real.
+El análisis de Orbitkey, Atoms, CUTS, Nécessaire, Master & Dynamic y Oura, el alcance de la inspección y la integración de funciones de la demo están documentados en [docs/rea-ui-integration.md](docs/rea-ui-integration.md). El diseño se implementa en src/app/editorial.css y los componentes React.
 
-## Pendiente antes de usar con estudiantes
+## Compatibilidad y datos
 
-Completar el hook de Supabase **Before User Created**, aplicar y validar las políticas RLS, añadir almacenamiento privado de imágenes, perfiles y productos persistentes y métricas con control de duplicados. Añadir moderación y políticas de privacidad. Conectar el repositorio a Vercel u otro alojamiento.
+La vista previa conserva `esan-emprende-demo-v1:interface-preview` e incorpora una vez `standalone-preview` si existe en el mismo origen. No se borran las claves originales. Se adaptan alias de campos, imágenes, estados y reseñas. Un JSON actual dañado bloquea la escritura automática. Entre dominios/navegadores, trasladar una copia JSON mediante Ajustes; por seguridad el sitio nuevo no puede leer localStorage de otro dominio.
 
-En esta fase el catálogo abre sin sesión; el acceso institucional queda deshabilitado y los datos siguen siendo de demostración. No hay pagos, pedidos ni ventas verificadas. No hay integración oficial con la universidad.
+## HTML descargable
 
-## Despliegue en Vercel
+```sh
+npm run export:html
+```
 
-Conecta el repositorio raíz (`/`) como aplicación Next.js, sin sobrescribir el directorio de salida. Los despliegues deben construirse desde nuevos commits de `main`: volver a desplegar una versión creada con el framework `Other` conserva ese override histórico y puede publicar assets estáticos sin sus rutas dinámicas de Next.js.
-
-## Flujo de vendedor local
-
-En Mi negocio crea el perfil del emprendimiento. Después usa Nueva publicación: Producto pide entrega, Servicio pide alcance y plazo, e Idea pide etapa y colaboradores. Revisar publicación abre una vista previa sin guardar; confirma allí o vuelve a editar. Las publicaciones pueden editarse, pausarse o eliminarse (con confirmación). El perfil se puede renombrar conservando las publicaciones. Ver mi perfil muestra la tienda incluso sin publicaciones. Todo se conserva solo en este navegador. Las imágenes y canales de contacto siguen siendo referencias de la demo; las estadísticas aparecerán al implementar medición real.
+Genera public/downloads/esan-emprende-local.html con CSS, JavaScript, fuentes y fotos incluidos. Abrir con doble clic; las funciones locales operan sin conexión y usan el espacio standalone-preview. Los contactos externos sí requieren acceso a sus servicios. El build regenera automáticamente este archivo mediante prebuild y se publica como descarga adjunta en `/downloads/esan-emprende-local.html`.
 
 ## Recursos fotográficos
 
-Las seis imágenes WebP en `public/images/demo-v1/` suman 195.216 bytes (antes se descargaba una lámina PNG de 2.701.817 bytes). Son tamaños de archivos, no una medición de Lighthouse. Next/Image selecciona tamaños de pantalla y carga diferida para el catálogo. El original se conserva en `assets/source/`; `npm run prepare:images` regenera los derivados. Si se cambia su contenido, usar un directorio versionado nuevo, porque `demo-v1` tiene caché inmutable. El sitio sigue sin login y con datos locales de demo.
+Las seis imágenes WebP demo-v1 suman 195.216 bytes frente a 2.701.817 del original. Next/Image proporciona tamaños responsivos y carga diferida. La lámina original se conserva en assets/source; `npm run prepare:images` regenera sus derivados. Al sustituir su contenido debe cambiar la versión del directorio porque demo-v1 tiene caché inmutable. Son tamaños de archivo, no una puntuación de Lighthouse.
+
+## Autenticación posterior
+
+AUTH_ENABLED se mantiene en false en src/lib/project-phase.ts. Para la futura fase de acceso se conservan NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY (publicable/anon, nunca service_role). El origen HTTPS y el formato /rest/v1 son compatibles. Consultar [docs/supabase-auth.md](docs/supabase-auth.md) antes de reactivar, verificar los redirects /auth/callback y el hook Before User Created. Persistencia compartida, RLS, moderación y medición real todavía están pendientes.

@@ -1,4 +1,4 @@
-export type Product = { id: string; name: string; store: string; owner: string; category: string; price: number; image: string; description: string; available: boolean; kind?: 'Producto' | 'Servicio' | 'Idea'; fulfillment?: string; scope?: string; timeline?: string; collaborators?: string; stage?: string };
+export type Product = { id: string; name: string; store: string; owner: string; category: string; price: number; image: string; description: string; available: boolean; kind?: 'Producto' | 'Servicio' | 'Idea'; fulfillment?: string; scope?: string; timeline?: string; collaborators?: string; stage?: string; status?: 'published' | 'paused' | 'deleted'; brandId?: string; [key: string]: unknown };
 export const categories = ['Todos', 'Comida y bebidas', 'Moda y accesorios', 'Arte y papelería', 'Hogar y bienestar', 'Soluciones tech', 'Servicios'];
 export const initialProducts: Product[] = [
  { id:'cookies', name:'Cookies de chocolate', store:'Miga & Mood', owner:'Valeria', category:'Comida y bebidas', price:12, image:'/images/cookies.jpg', description:'Crujientes por fuera, suaves por dentro. Cookies artesanales con trozos de chocolate. Pack de 3 unidades, preparadas a pedido. Coordina la entrega en el campus con el emprendimiento.', available:true },
@@ -22,4 +22,9 @@ export const storeDescriptions: Record<string, string> = {
  'Entre Clases': 'Accesorios y merchandising que acompañan tus días en la universidad. Consulta opciones para tu grupo o proyecto.',
  'Nodo Studio': 'Soluciones digitales para ideas que recién empiezan: páginas web y automatización a la medida de tu proyecto.',
  'Circular Campus': 'Una idea en construcción. Conectamos estudiantes que quieren crear soluciones para la vida universitaria.',
+};
+
+// Información ficticia conservada de la demo HTML; no es verificación académica.
+export const storeAcademic: Record<string,[string,number]> = {
+ 'Miga & Mood':['Administración y Gerencia',6], 'Entre Clases':['Marketing',5], 'Raíz':['Ingeniería Industrial',7], 'Áurea Studio':['Marketing',4], 'Pausa Café':['Economía',6], 'Papel & Punto':['Administración y Marketing',5], 'Nodo Studio':['Ingeniería de Sistemas',8], 'Circular Campus':['Ingeniería de Sistemas',6],
 };

@@ -28,3 +28,11 @@ El panel operativo prioriza perfil y publicaciones. El perfil usa una superficie
 
 ## Rendimiento y móvil
 Las fotografías de referencia ahora se publican separadas en WebP (demo-v1), con Next/Image, tamaños responsivos y object-fit cover para conservar proporciones. Solo la foto inicial de destacados se precarga; las tarjetas inferiores y miniaturas usan carga diferida. Los derivados tienen caché inmutable; la lámina original se conserva fuera de public. En móvil, el destacado tiene una foto y un texto más compactos; la selección de emprendimientos es horizontal. Las categorías se muestran en chips, sin repetir el directorio de escritorio. Favoritos, controles de carrusel y navegación tienen superficies de al menos 44 px. El buscador ocupa una fila completa.
+
+## Adaptación editorial REA (octubre de 2026)
+
+La implementación principal vive en Next.js, no en demo-sites. El análisis y la matriz por referencia están en docs/rea-ui-integration.md. Se incorporan navegación, filtros, tema y detalle ampliado de la demo histórica a los componentes React; los estilos editoriales se centralizan en src/app/editorial.css, después de globals.css para preservar los flujos existentes.
+
+Tokens: marfil #f8f7f4, superficie #ffffff, tinta #20211e, acento #a42932, verde #334b40, texto secundario #62665e, borde #dedfd8. Tema oscuro: fondo #171a18, superficie #202520, tinta #f1f2ec, secundario #b7c0b4, acento #ef969d, borde #414a40. Manrope para títulos y DM Sans para lectura. Contenedor 1440px máximo/92%, hero de dos columnas con fotografía, tarjetas de cuatro columnas (tres en tablet y dos en móvil), perfiles de dos columnas que se apilan en móvil. Radios de 8–12px en fotografía y 2–4px en controles. No se copian activos ni claims comerciales ajenos.
+
+Inicio presenta una selección editorial; Explorar filtra por texto, tipo, categoría y disponibilidad. Navegación con hash permite compartir vistas e historial; las reseñas y el contacto viven en el detalle. Ajustes reúne tema y respaldo de datos. Los perfiles demo no fabrican canales ni reseñas; los perfiles propios pueden configurar sus enlaces. Los formularios retienen validaciones y foco visible. Se respeta prefers-reduced-motion.

@@ -60,6 +60,8 @@ test('carrusel automático, pausa y selección manual',async({page})=>{
  await page.clock.install();
  await page.goto('/');
  await expect(page.locator('.feature-copy')).toContainText('Una pausa con mucho chocolate.');
+ await expect(page.getByRole('button',{name:'Pausar destacados',exact:true})).toBeVisible();
+ await page.clock.runFor(100);
  await page.clock.fastForward(6500);
  await expect(page.locator('.feature-copy')).toContainText('Lleva tu estilo');
  await page.getByRole('button',{name:'Pausar destacados',exact:true}).click();
