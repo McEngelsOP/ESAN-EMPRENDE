@@ -117,7 +117,7 @@ test('editar perfil y publicación conserva identidad, confirmar eliminación',a
  await page.getByRole('button',{name:'Revisar publicación'}).click();
  await page.getByRole('button',{name:'Guardar cambios'}).click();
  await expect(page.locator('.seller-row')).toHaveCount(1);
- await page.getByRole('button',{name:'Editar perfil'}).click();
+ await page.getByRole('button',{name:'Resumen',exact:true}).click();await page.getByRole('button',{name:'Editar perfil'}).click();
  await page.getByLabel('Nombre del emprendimiento').fill('Taller actualizado');
  await page.getByRole('button',{name:'Guardar perfil'}).click();
  await page.reload();await page.getByRole('button',{name:'Mi negocio'}).click();
@@ -209,4 +209,16 @@ test('panel, edición de precio y eliminación local confirmada',async({page})=>
  await page.getByRole('button',{name:'Productos',exact:true}).click();await page.getByRole('button',{name:'Actualizar precio',exact:true}).click();await page.getByLabel('Nuevo precio (S/)').fill('18.50');await page.getByRole('button',{name:'Guardar precio'}).click();await expect(page.locator('.seller-row')).toContainText('18.50');
  await page.getByRole('button',{name:'Abrir ajustes'}).click();await page.getByRole('button',{name:'Eliminar datos locales'}).click();await expect(page.getByRole('button',{name:'Eliminar datos',exact:true})).toBeDisabled();await page.getByLabel('Escribe ELIMINAR para confirmar').fill('ELIMINAR');await page.getByRole('button',{name:'Eliminar datos',exact:true}).click();await expect(page.getByRole('status')).toContainText('Datos de esta vista eliminados.');
  await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.getByLabel('Nombre del emprendimiento')).toBeVisible();
+});
+
+test('producto agotado permanece visible y puede volver a activarse',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();await page.getByLabel('Nombre del producto').fill('Brownie disponible');await page.getByLabel('Precio (S/)',{exact:true}).fill('12');await page.getByLabel('Descripción',{exact:true}).fill('Brownie preparado para la prueba de disponibilidad.');await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();
+ const row=page.locator('.seller-row').filter({hasText:'Brownie disponible'});await row.getByRole('button',{name:'Marcar agotado'}).click();await expect(row).toContainText('Agotado');await page.reload();await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.locator('.seller-row')).toContainText('Agotado');await page.locator('.seller-row').getByRole('button',{name:'Activar'}).click();await expect(page.locator('.seller-row')).toContainText('Disponible');
+});
+
+test('errores en línea y eliminación desde el editor',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();await page.getByRole('button',{name:'Revisar publicación'}).click();await expect(page.locator('#offer-errors')).toContainText('Revisa 3 campos');await expect(page.locator('#offer-name')).toHaveAttribute('aria-invalid','true');
+ await page.getByLabel('Nombre del producto').fill('Prueba de edición');await page.getByLabel('Precio (S/)',{exact:true}).fill('20');await page.getByLabel('Descripción',{exact:true}).fill('Descripción completa de la publicación.');await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();await expect(page.locator('.saved-offer-banner')).toContainText('Producto guardado');await page.locator('.seller-row-actions').getByRole('button',{name:'Editar',exact:true}).click();await page.getByRole('button',{name:'Eliminar producto',exact:true}).click();await expect(page.getByRole('dialog')).toContainText('Prueba de edición');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);await expect(page.getByLabel('Nombre del producto')).toHaveValue('Prueba de edición');await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new DOMException('Sin espacio','QuotaExceededError')}});await page.getByRole('button',{name:'Eliminar producto',exact:true}).click();await page.getByRole('button',{name:'Confirmar eliminación'}).click();await expect(page.getByRole('dialog').getByRole('alert')).toContainText('No se pudo eliminar');
 });
