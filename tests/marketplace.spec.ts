@@ -121,7 +121,7 @@ test('editar perfil y publicación conserva identidad, confirmar eliminación',a
  await page.getByLabel('Nombre del emprendimiento').fill('Taller actualizado');
  await page.getByRole('button',{name:'Guardar perfil'}).click();
  await page.reload();await page.getByRole('button',{name:'Mi negocio'}).click();
- await expect(page.locator('.seller-title h1')).toHaveText('Taller actualizado');
+ await expect(page.locator('.seller-business-name')).toHaveText('Taller actualizado');
  await expect(page.locator('.seller-list')).toContainText('Oferta corregida');
  await page.getByRole('button',{name:'Eliminar Oferta corregida'}).click();
  await page.getByRole('button',{name:'Conservar publicación'}).click();
@@ -175,4 +175,38 @@ test('imágenes adaptables y controles móviles accesibles',async({page},info)=>
  if(info.project.name==='mobile'){const choices=await page.locator('.feature-choices').boundingBox();expect(choices!.height).toBeLessThanOrEqual(80);}
  await page.screenshot({path:`/tmp/esan-optimized-${info.project.name}.png`,fullPage:true});
  if(info.project.name==='mobile'){await page.setViewportSize({width:320,height:700});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/esan-optimized-narrow.png',fullPage:true});}
+});
+
+test('galería local: tres fotos, principal, edición y persistencia',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();
+ await page.getByLabel('Nombre del producto').fill('Galería de prueba');await page.getByLabel('Precio (S/)',{exact:true}).fill('18.50');
+ await page.getByLabel('Descripción',{exact:true}).fill('Una publicación de prueba con varias imágenes.');
+ for(const image of ['cookies','bag','plant']) await page.locator('.photo-upload input').setInputFiles(`public/images/demo-v1/${image}.webp`);
+ await expect(page.locator('.offer-photo')).toHaveCount(3);await expect(page.locator('.photo-upload')).toHaveCount(0);
+ await page.getByRole('button',{name:'Usar como principal'}).last().click();
+ await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();
+ await page.reload();await page.getByRole('button',{name:'Mi negocio'}).click();await page.locator('.seller-row-actions').getByRole('button',{name:'Editar',exact:true}).click();
+ await expect(page.locator('.offer-photo')).toHaveCount(3);await page.getByRole('button',{name:'Quitar foto 2'}).click();await expect(page.locator('.offer-photo')).toHaveCount(2);
+});
+
+test('un fallo de almacenamiento conserva el formulario y no confirma guardado',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();
+ await page.getByLabel('Nombre del producto').fill('Prueba sin espacio');await page.getByLabel('Precio (S/)',{exact:true}).fill('9');
+ await page.getByLabel('Descripción',{exact:true}).fill('Descripción de prueba para comprobar el guardado.');
+ await page.getByRole('button',{name:'Revisar publicación'}).click();
+ await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k.includes('interface-preview'))throw new DOMException('Sin espacio','QuotaExceededError');return original.call(this,k,v)}});
+ await page.getByRole('button',{name:'Publicar en la demo'}).click();await expect(page.locator('.offer-preview')).toContainText('No pudimos guardar');
+ await expect(page.locator('.seller-list')).toHaveCount(0);await page.getByRole('button',{name:'Seguir editando'}).click();await expect(page.getByLabel('Nombre del producto')).toHaveValue('Prueba sin espacio');
+});
+
+test('panel, edición de precio y eliminación local confirmada',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await expect(page.getByRole('heading',{name:'Actividad de tu tienda'})).toBeVisible();
+ await page.getByRole('button',{name:'Compartir',exact:true}).click();await expect(page.getByRole('dialog',{name:'Comparte tu tienda'})).toContainText('solo en este navegador');await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Agregar producto',exact:true}).click();await page.getByLabel('Nombre del producto').fill('Producto de panel');await page.getByLabel('Precio (S/)',{exact:true}).fill('12');await page.getByLabel('Descripción',{exact:true}).fill('Descripción adecuada del producto de prueba.');await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();
+ await page.getByRole('button',{name:'Productos',exact:true}).click();await page.getByRole('button',{name:'Actualizar precio',exact:true}).click();await page.getByLabel('Nuevo precio (S/)').fill('18.50');await page.getByRole('button',{name:'Guardar precio'}).click();await expect(page.locator('.seller-row')).toContainText('18.50');
+ await page.getByRole('button',{name:'Abrir ajustes'}).click();await page.getByRole('button',{name:'Eliminar datos locales'}).click();await expect(page.getByRole('button',{name:'Eliminar datos',exact:true})).toBeDisabled();await page.getByLabel('Escribe ELIMINAR para confirmar').fill('ELIMINAR');await page.getByRole('button',{name:'Eliminar datos',exact:true}).click();await expect(page.getByRole('status')).toContainText('Datos de esta vista eliminados.');
+ await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.getByLabel('Nombre del emprendimiento')).toBeVisible();
 });
