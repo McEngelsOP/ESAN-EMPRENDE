@@ -6,9 +6,9 @@ Fondo marfil #fbfbf8, tinta #242a27, rojo #bd302f, verde #254638, texto secundar
 Catálogo fotográfico, filtros visibles, búsqueda inmediata y favoritos accesibles. Tres columnas en escritorio, dos en móvil (breakpoint de 760 px). La fotografía lidera el contenido; no hay animación de entrada que esconda información. Transición de zoom breve al explorar una foto. Se respeta movimiento reducido. Diálogos nativos para detalles y formulario con foco contenido y Escape. Todos los ejemplos están identificados como demo.
 
 ## Acceso institucional
-Modo Operate. `/acceso` hereda la identidad del catálogo: presentación breve a la izquierda y formulario por enlace a la derecha; en móvil el formulario sigue al texto sin fotografía. Incluye espera, fallo, confirmación de envío y errores de enlace vencido. Etiqueta de correo visible, feedback anunciado y botón deshabilitado durante envío. La pantalla raíz valida sesión antes de renderizar el catálogo. El formulario no pide contraseña ni ofrece acceso público.
+Modo Operate. El catálogo público abre directamente sin cuenta. `/acceso` hereda la identidad del catálogo: presentación breve a la izquierda y formulario por enlace a la derecha; en móvil el formulario sigue al texto sin fotografía. Mi negocio y la publicación requieren una cuenta con correo `@ue.edu.pe` verificado. Tras verificar el enlace de un solo uso, la persona regresa a Mi negocio. Incluye espera, fallo, confirmación de envío y errores de enlace vencido. Etiqueta de correo visible, feedback anunciado y botón deshabilitado durante envío; no pide contraseña.
 
-La fase de interfaz deja el acceso deshabilitado: el catálogo abre directamente, sin indicador de sesión activa ni botón de cierre. La banda superior identifica la vista previa y los datos de demostración.
+Las visitas públicas no muestran estado de sesión. La banda superior distingue la vista de visitante de la sesión institucional y de la vista previa local. Solo las cuentas verificadas acceden al espacio privado del negocio.
 
 
 ## Components

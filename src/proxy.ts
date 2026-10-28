@@ -17,8 +17,8 @@ export async function proxy(request: NextRequest) {
       values.forEach(({name,value,options})=>response.cookies.set(name,value,options));
     },
   }});
-  // Valida con Auth y renueva las cookies; la autorización vive junto al contenido.
-  await client.auth.getUser();
+  // Renueva la sesión si Auth responde; cada ruta privada valida por separado.
+  try { await client.auth.getUser(); } catch { /* Auth no debe bloquear el catálogo público. */ }
   return response;
 }
 export const config={matcher:['/','/acceso','/api/mi-negocio']};

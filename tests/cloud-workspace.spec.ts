@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { businessValues, productValues, cloudBusiness, cloudProduct } from '../src/lib/cloud-workspace';
+import { BUSINESS_WORKSPACE_PATH, postAuthDestination } from '../src/lib/auth-policy';
 test('API privada rechaza solicitudes sin sesión y sin activación',async({request})=>{
  expect((await request.get('/api/mi-negocio')).status()).toBe(401);
  expect((await request.post('/api/mi-negocio',{data:{action:'business',value:{}}})).status()).toBe(403);
@@ -13,4 +14,8 @@ test('contrato privado valida tipos, precios e imágenes antes de guardar',()=>{
  expect(()=>productValues({...p,image:'data:image/png;base64,x'})).toThrow('imágenes');
  const b=cloudBusiness({id:'id',nombre:'Tienda',creador:'Andrea',descripcion:business.description,coordinacion:'Campus'});
  expect(cloudProduct({id:'p',nombre:'Producto',tipo:'Producto',precio:'18.50',disponible:true,categoria:'Comida',descripcion:'Detalle'},b).price).toBe(18.5);
+});
+test('el retorno tras verificar el correo solo admite el área privada prevista',()=>{
+ expect(postAuthDestination(BUSINESS_WORKSPACE_PATH)).toBe(BUSINESS_WORKSPACE_PATH);
+ for(const path of ['https://example.com','//example.com','/acceso?next=https://example.com',null])expect(postAuthDestination(path)).toBe('/');
 });
