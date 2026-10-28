@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import { Code2, Lightbulb } from 'lucide-react';
+import { Code2, Lightbulb, ImageIcon } from 'lucide-react';
 const images = ['/images/cookies.jpg', '/images/bag.jpg', '/images/plant.jpg', '/images/jewelry.jpg', '/images/coffee.jpg', '/images/notebook.jpg'];
 export function ProductImage({ src, alt, sizes="(max-width: 760px) 45vw, (max-width: 1280px) 30vw, 420px", preload=false }: { src: string; alt: string; sizes?: string; preload?: boolean }) {
+  if (!src) return <div className="offer-art" role={alt ? 'img' : undefined} aria-label={alt || undefined}><ImageIcon size={42} strokeWidth={1.25}/><span>Sin foto</span></div>;
   if (src === 'tech' || src === 'idea') {
     const Icon = src === 'tech' ? Code2 : Lightbulb;
     return <div className={`offer-art ${src}`} role={alt ? 'img' : undefined} aria-label={alt || undefined} aria-hidden={!alt || undefined}><Icon size={56} strokeWidth={1.25}/><span aria-hidden="true">{src === 'tech' ? 'Ideas que funcionan.' : 'Todo empieza con una idea.'}</span></div>;

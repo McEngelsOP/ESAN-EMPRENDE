@@ -176,3 +176,27 @@ test('imágenes adaptables y controles móviles accesibles',async({page},info)=>
  await page.screenshot({path:`/tmp/esan-optimized-${info.project.name}.png`,fullPage:true});
  if(info.project.name==='mobile'){await page.setViewportSize({width:320,height:700});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'/tmp/esan-optimized-narrow.png',fullPage:true});}
 });
+
+test('galería local: tres fotos, principal, edición y persistencia',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();
+ await page.getByLabel('Nombre del producto').fill('Galería de prueba');await page.getByLabel('Precio (S/)',{exact:true}).fill('18.50');
+ await page.getByLabel('Descripción',{exact:true}).fill('Una publicación de prueba con varias imágenes.');
+ for(const image of ['cookies','bag','plant']) await page.locator('.photo-upload input').setInputFiles(`public/images/demo-v1/${image}.webp`);
+ await expect(page.locator('.offer-photo')).toHaveCount(3);await expect(page.locator('.photo-upload')).toHaveCount(0);
+ await page.getByRole('button',{name:'Usar como principal'}).last().click();
+ await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();
+ await page.reload();await page.getByRole('button',{name:'Mi negocio'}).click();await page.locator('.seller-row-actions').getByRole('button',{name:'Editar',exact:true}).click();
+ await expect(page.locator('.offer-photo')).toHaveCount(3);await page.getByRole('button',{name:'Quitar foto 2'}).click();await expect(page.locator('.offer-photo')).toHaveCount(2);
+});
+
+test('un fallo de almacenamiento conserva el formulario y no confirma guardado',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();
+ await page.getByLabel('Nombre del producto').fill('Prueba sin espacio');await page.getByLabel('Precio (S/)',{exact:true}).fill('9');
+ await page.getByLabel('Descripción',{exact:true}).fill('Descripción de prueba para comprobar el guardado.');
+ await page.getByRole('button',{name:'Revisar publicación'}).click();
+ await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k.includes('interface-preview'))throw new DOMException('Sin espacio','QuotaExceededError');return original.call(this,k,v)}});
+ await page.getByRole('button',{name:'Publicar en la demo'}).click();await expect(page.locator('.offer-preview')).toContainText('No pudimos guardar');
+ await expect(page.locator('.seller-list')).toHaveCount(0);await page.getByRole('button',{name:'Seguir editando'}).click();await expect(page.getByLabel('Nombre del producto')).toHaveValue('Prueba sin espacio');
+});
