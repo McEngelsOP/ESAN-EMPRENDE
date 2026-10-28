@@ -29,6 +29,7 @@ export default function MobileAccess({ configured, next, error }: { configured: 
         <span className="mobile-login-mark"><Sprout size={25} strokeWidth={1.5} aria-hidden="true" /></span>
         <span>EMPRENDE<br /><strong>ESANINO</strong></span>
       </a>
+      <div className="mobile-login-content">
       {state.status === 'sent' ? <section className="mobile-login-sent" role="status">
         <CheckCircle2 size={36} strokeWidth={1.5} aria-hidden="true" />
         <h1 id="mobile-access-title">Revisa tu correo.</h1>
@@ -66,6 +67,7 @@ export default function MobileAccess({ configured, next, error }: { configured: 
           <button type="button" onClick={() => changeMode(mode === 'recover' ? 'login' : 'recover')} disabled={busy}>{mode === 'recover' ? 'Iniciar sesión' : 'Recuperar cuenta'}</button>
         </nav>
       </>}
+      </div>
       <p className="mobile-login-note">Un espacio para las ideas de nuestra U.<br />Acceso con tu cuenta institucional @ue.edu.pe.</p>
     </main>
   </div>;
