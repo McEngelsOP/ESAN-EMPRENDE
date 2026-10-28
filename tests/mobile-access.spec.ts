@@ -24,7 +24,7 @@ test('la imagen y el panel móvil no sustituyen el acceso de escritorio', async 
   await expect(page.locator('.mobile-access'))[isMobile ? 'toBeVisible' : 'toBeHidden']();
   await expect(page.locator('.access-desktop'))[isMobile ? 'toBeHidden' : 'toBeVisible']();
   if (isMobile) {
-    for (const [width, height] of [[320, 640], [390, 844], [430, 760], [760, 360], [390, 360]]) {
+    for (const [width, height] of [[320, 568], [320, 640], [390, 640], [390, 740], [390, 844], [430, 760], [760, 360], [390, 360]]) {
       await page.setViewportSize({ width, height });
       const bounds = await page.locator('.mobile-login-panel').boundingBox();
       expect(bounds).not.toBeNull();
@@ -33,8 +33,12 @@ test('la imagen y el panel móvil no sustituyen el acceso de escritorio', async 
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width - 15.5);
       expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(height - 15.5);
       expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight)).toBe(true);
-      await page.locator('.mobile-login-content').evaluate(el => { el.scrollTop = el.scrollHeight; });
-      await expect(page.locator('.mobile-login-note')).toBeInViewport();
+      expect(await page.locator('.mobile-login-content').evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+      for (const name of ['Iniciar sesión', 'Continuar con Google', 'Crear cuenta', 'Recuperar cuenta']) {
+        await expect(page.getByRole('button', { name, exact: true })).toBeInViewport({ ratio: 1 });
+      }
+      await expect(page.getByRole('link', { name: 'Continuar como invitado' })).toBeInViewport({ ratio: 1 });
+      if(height > 520) await expect(page.locator('.mobile-login-note')).toBeInViewport({ ratio: 1 });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await expect(page.getByRole('button', { name: 'Continuar con Google', exact: true })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Continuar como invitado' })).toBeVisible();

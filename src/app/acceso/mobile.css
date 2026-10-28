@@ -54,7 +54,7 @@
   .mobile-login-mark { width: 43px; height: 43px; border: 1px solid rgb(246 245 233 / 72%); border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
   .mobile-login-brand > span:last-child { font-family: Manrope, sans-serif; font-size: 12px; line-height: 1.5; letter-spacing: .14em; }
   .mobile-login-brand strong { font-size: 19px; letter-spacing: .12em; font-weight: 600; }
-  .mobile-login-content { flex: 1 1 auto; min-height: 0; margin: -6px; padding: 6px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scroll-padding: 12px; scrollbar-width: thin; scrollbar-color: #b9c9ad transparent; touch-action: pan-y; }
+  .mobile-login-content { flex: 1 1 auto; min-height: 0; margin: -6px; padding: 6px; overflow: clip; overscroll-behavior: none; }
   .mobile-login-heading { margin-bottom: 24px; }
   .mobile-login-heading h1, .mobile-login-sent h1 { font-family: Manrope, sans-serif; font-size: clamp(25px, 7vw, 32px); letter-spacing: -.035em; line-height: 1.18; font-weight: 600; color: var(--login-cream); }
   .mobile-login-heading p { font-size: 14px; line-height: 1.6; margin-top: 11px; color: var(--login-muted); }
@@ -85,12 +85,66 @@
   .mobile-login-sent p { font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
   .mobile-access button:disabled { opacity: .65; cursor: not-allowed; }
 }
-@media (max-width: 760px) and (max-height: 700px) {
-  .mobile-login-panel { padding: 18px 20px 16px; }
-  .mobile-login-brand { margin-bottom: 12px; }
-  .mobile-login-heading { margin-bottom: 18px; }
-  .mobile-login-divider { margin: 16px 0; }
-  .mobile-login-note { margin-top: 10px; }
+/* Density follows the available height; account controls always remain visible. */
+@media (max-width: 760px) {
+  .mobile-login-panel { padding: 16px 18px 14px; }
+  .mobile-login-brand { margin-bottom: 8px; gap: 10px; }
+  .mobile-login-mark { width: 34px; height: 34px; }
+  .mobile-login-brand > span:last-child { font-size: 10px; }
+  .mobile-login-brand strong { font-size: 16px; }
+  .mobile-login-heading { margin-bottom: 6px; }
+  .mobile-login-heading h1, .mobile-login-sent h1 { font-size: 24px; line-height: 1.15; }
+  .mobile-login-heading p { font-size: 12px; line-height: 1.35; margin-top: 6px; }
+  .mobile-login-form > label { font-size: 12px; line-height: 1.3; margin-bottom: 4px; }
+  .mobile-login-input { height: 44px; }
+  .mobile-login-input input { height: 42px; padding: 0; }
+  #mobile-email-help { font-size: 11px; line-height: 1.3; margin: 6px 0 10px; }
+  .mobile-login-primary, .mobile-login-secondary, .mobile-login-google { min-height: 44px; font-size: 14px; line-height: 1.3; padding: 8px 12px; }
+  .mobile-login-secondary { margin-top: 6px; }
+  .mobile-login-divider { margin: 6px 0; font-size: 11px; line-height: 16px; }
+  .mobile-login-links { margin-top: 2px; }
+  .mobile-login-links button { font-size: 12px; }
+  .mobile-login-note { margin-top: 6px; padding-top: 6px; font-size: 10px; line-height: 1.4; }
+  .mobile-login-error { padding: 6px 8px; margin-bottom: 6px; font-size: 11px; line-height: 1.3; }
+  .mobile-login-form:has(.mobile-login-error) #mobile-email-help { display: none; }
+  .mobile-login-form:has(.mobile-login-error) #mobile-access-feedback { margin-top: 6px; }
 }
-@media (max-width: 360px) { .mobile-login-panel { padding: 22px 18px; } .mobile-login-links button { font-size: 12px; } }
+@media (max-width: 760px) and (min-height: 741px) {
+  .mobile-login-panel { padding: 24px 24px 20px; }
+  .mobile-login-brand { margin-bottom: 18px; gap: 12px; }
+  .mobile-login-mark { width: 43px; height: 43px; }
+  .mobile-login-brand > span:last-child { font-size: 12px; }
+  .mobile-login-brand strong { font-size: 19px; }
+  .mobile-login-heading { margin-bottom: 18px; }
+  .mobile-login-heading h1 { font-size: 28px; line-height: 1.18; }
+  .mobile-login-heading p { font-size: 14px; line-height: 1.5; margin-top: 8px; }
+  .mobile-login-form > label { font-size: 14px; margin-bottom: 8px; }
+  .mobile-login-input { height: 50px; }
+  .mobile-login-input input { height: 48px; }
+  .mobile-login-primary, .mobile-login-secondary, .mobile-login-google { min-height: 50px; font-size: 16px; padding: 10px 12px; }
+  .mobile-login-secondary { margin-top: 10px; }
+  .mobile-login-divider { margin: 14px 0; }
+  .mobile-login-links { margin-top: 8px; }
+  .mobile-login-links button { font-size: 13px; }
+  .mobile-login-note { margin-top: 12px; padding-top: 10px; font-size: 11px; line-height: 1.6; }
+}
+@media (max-width: 760px) and (max-height: 520px) {
+  .mobile-login-note { display: none; }
+  .mobile-login-panel { max-width: 700px; padding: 10px 16px; }
+  .mobile-login-brand { margin-bottom: 6px; }
+  .mobile-login-mark { width: 30px; height: 30px; }
+  .mobile-login-content { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-rows: auto auto auto auto auto; gap: 4px 12px; align-content: start; }
+  .mobile-login-heading { grid-column: 1 / -1; margin: 0 0 4px; }
+  .mobile-login-heading h1 { font-size: 22px; }
+  .mobile-login-heading p, #mobile-email-help { display: none; }
+  .mobile-login-form { grid-column: 1; grid-row: 2 / 5; gap: 0; }
+  .mobile-login-primary { margin-top: 6px; }
+  .mobile-login-content > .mobile-login-secondary { grid-column: 2; grid-row: 2; margin: 0; }
+  .mobile-login-divider { grid-column: 2; grid-row: 3; margin: 0; }
+  .mobile-login-content > form:not(.mobile-login-form) { grid-column: 2; grid-row: 4; }
+  .mobile-login-links { grid-column: 1 / -1; grid-row: 5; }
+  .mobile-login-content > .mobile-login-error, .mobile-login-sent { grid-column: 1 / -1; }
+  .mobile-login-primary, .mobile-login-secondary, .mobile-login-google { font-size: 13px; gap: 6px; padding: 6px; }
+}
+@media (max-width: 360px) and (min-height: 741px) { .mobile-login-panel { padding: 22px 18px; } }
 @media (prefers-reduced-motion: reduce) { .mobile-access * { transition: none; } }
