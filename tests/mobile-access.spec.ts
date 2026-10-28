@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.skip(process.env.ESAN_AUTH_ENABLED !== 'true', 'Requiere acceso institucional activado.');
 
-test('el acceso móvil conserva invitado y cambia entre crear y recuperar cuenta', async ({ page, isMobile }) => {
-  test.skip(!isMobile, 'Superficie exclusiva de móvil.');
+test('el acceso conserva invitado y cambia entre crear y recuperar cuenta', async ({ page, isMobile }) => {
+
   await page.goto('/acceso?next=%2F%23%2Fmi-emprendimiento');
   await expect(page.getByRole('heading', { name: 'Bienvenido de nuevo.' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Emprende Esanino, ir al inicio' })).toBeVisible();
@@ -19,10 +19,10 @@ test('el acceso móvil conserva invitado y cambia entre crear y recuperar cuenta
   await expect(page.locator('.product-card')).toHaveCount(12);
 });
 
-test('la imagen y el panel móvil no sustituyen el acceso de escritorio', async ({ page, isMobile }) => {
+test('cada versión conserva su fondo y el panel estático completo', async ({ page, isMobile }) => {
   await page.goto('/acceso');
-  await expect(page.locator('.mobile-access'))[isMobile ? 'toBeVisible' : 'toBeHidden']();
-  await expect(page.locator('.access-desktop'))[isMobile ? 'toBeHidden' : 'toBeVisible']();
+  await expect(page.locator('.mobile-access')).toBeVisible();
+  expect(await page.locator('.mobile-access').evaluate(el => getComputedStyle(el, '::before').backgroundImage)).toContain(isMobile ? 'login-tree.jpg' : 'login-window.jpg');
   if (isMobile) {
     for (const [width, height] of [[320, 568], [320, 640], [390, 640], [390, 740], [390, 844], [430, 760], [760, 360], [390, 360]]) {
       await page.setViewportSize({ width, height });
@@ -44,7 +44,16 @@ test('la imagen y el panel móvil no sustituyen el acceso de escritorio', async 
       await expect(page.getByRole('link', { name: 'Continuar como invitado' })).toBeVisible();
     }
   } else {
-    await expect(page.getByRole('heading', { name: 'Publica lo que estás creando.' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Continuar con Google', exact: true })).toBeHidden();
+    for (const [width, height] of [[1024, 600], [1366, 768], [1440, 900], [1920, 1080], [1024, 480]]) {
+      await page.setViewportSize({width,height});
+      const panel=await page.locator('.mobile-login-panel').boundingBox();
+      expect(panel!.x + panel!.width / 2).toBeLessThan(width / 2);
+      expect(panel!.y).toBeGreaterThanOrEqual(15.5);
+      expect(panel!.y + panel!.height).toBeLessThanOrEqual(height - 15.5);
+      expect(await page.locator('.mobile-login-content').evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+      expect(await page.evaluate(()=>document.documentElement.scrollHeight <= innerHeight)).toBe(true);
+      for(const name of ['Iniciar sesión','Continuar con Google','Crear cuenta','Recuperar cuenta']) await expect(page.getByRole('button',{name,exact:true})).toBeInViewport({ratio:1});
+      await expect(page.getByRole('link',{name:'Continuar como invitado'})).toBeInViewport({ratio:1});
+    }
   }
 });

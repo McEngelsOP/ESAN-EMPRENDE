@@ -1,7 +1,5 @@
-/* The photo and translucent panel are exclusive to the mobile access route. */
-.mobile-access { display: none; }
-@media (max-width: 760px) {
-  .access-desktop { display: none; }
+/* Shared static access shell; each device class uses its own original photo. */
+@media all {
   .mobile-access {
     --login-cream: #f6f5e9;
     --login-muted: #e0e9da;
@@ -86,7 +84,7 @@
   .mobile-access button:disabled { opacity: .65; cursor: not-allowed; }
 }
 /* Density follows the available height; account controls always remain visible. */
-@media (max-width: 760px) {
+@media all {
   .mobile-login-panel { padding: 16px 18px 14px; }
   .mobile-login-brand { margin-bottom: 8px; gap: 10px; }
   .mobile-login-mark { width: 34px; height: 34px; }
@@ -109,7 +107,7 @@
   .mobile-login-form:has(.mobile-login-error) #mobile-email-help { display: none; }
   .mobile-login-form:has(.mobile-login-error) #mobile-access-feedback { margin-top: 6px; }
 }
-@media (max-width: 760px) and (min-height: 741px) {
+@media (min-height: 741px) {
   .mobile-login-panel { padding: 24px 24px 20px; }
   .mobile-login-brand { margin-bottom: 18px; gap: 12px; }
   .mobile-login-mark { width: 43px; height: 43px; }
@@ -128,7 +126,7 @@
   .mobile-login-links button { font-size: 13px; }
   .mobile-login-note { margin-top: 12px; padding-top: 10px; font-size: 11px; line-height: 1.6; }
 }
-@media (max-width: 760px) and (max-height: 520px) {
+@media (max-height: 520px) {
   .mobile-login-note { display: none; }
   .mobile-login-panel { max-width: 700px; padding: 10px 16px; }
   .mobile-login-brand { margin-bottom: 6px; }
@@ -148,3 +146,24 @@
 }
 @media (max-width: 360px) and (min-height: 741px) { .mobile-login-panel { padding: 22px 18px; } }
 @media (prefers-reduced-motion: reduce) { .mobile-access * { transition: none; } }
+
+/* Desktop: keep the window and flowers visible to the right of the panel. */
+@media (min-width: 761px) {
+  .mobile-access {
+    justify-content: flex-start;
+    padding: clamp(16px, 3vh, 48px) clamp(24px, 5vw, 96px);
+    background: #354c42;
+  }
+  .mobile-access::before {
+    background-image: url('/images/login-window.jpg');
+    background-position: center center;
+  }
+  .mobile-login-panel {
+    max-width: 440px;
+    height: min(760px, 100%);
+    background: rgb(14 35 29 / 74%);
+  }
+}
+@media (min-width: 761px) and (max-height: 520px) {
+  .mobile-login-panel { max-width: 700px; }
+}
