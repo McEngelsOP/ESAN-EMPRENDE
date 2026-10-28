@@ -1,4 +1,4 @@
-import { AUTH_ENABLED } from '@/lib/project-phase';
+import { AUTH_ENABLED, CLOUD_ENABLED } from '@/lib/project-phase';
 import { redirect } from 'next/navigation';
 import Marketplace from '@/components/marketplace';
 import { supabaseServer } from '@/lib/supabase/server';
@@ -10,5 +10,5 @@ export default async function Page(){
  if(!client)redirect('/acceso');
  const {data:{user},error}=await client.auth.getUser();
  if(error||!allowedUser(user))redirect('/acceso');
- return <Marketplace accountId={user!.id}/>;
+ return <Marketplace accountId={user!.id} cloudEnabled={CLOUD_ENABLED}/>;
 }

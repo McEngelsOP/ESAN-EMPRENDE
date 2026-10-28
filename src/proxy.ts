@@ -21,4 +21,4 @@ export async function proxy(request: NextRequest) {
   await client.auth.getUser();
   return response;
 }
-export const config={matcher:['/','/acceso']};
+export const config={matcher:['/','/acceso','/api/mi-negocio']};
