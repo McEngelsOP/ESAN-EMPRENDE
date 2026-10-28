@@ -18,7 +18,7 @@ test('migra la demo anterior sin borrar favoritos ni reseñas y no los resucita'
  await page.goto('/');await expect(page.locator('.product-card')).toHaveCount(13);
  await page.getByRole('button',{name:'Quitar de favoritos: Cookies de chocolate',exact:true}).click();
  await page.reload();await expect(page.getByRole('button',{name:'Añadir a favoritos: Cookies de chocolate',exact:true})).toBeVisible();
- await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.locator('.seller-title h1')).toHaveText('Mi taller anterior');await expect(page.locator('.seller-list')).toContainText('Publicación anterior');
+ await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.locator('.seller-business-name')).toHaveText('Mi taller anterior');await expect(page.locator('.seller-list')).toContainText('Publicación anterior');
  const raw=await page.evaluate(()=>JSON.parse(localStorage.getItem('esan-emprende-demo-v1:interface-preview')||'{}'));
  expect(raw.unknownEnvelope).toBe('conservar');expect(raw.reviews).toHaveLength(1);expect(raw.products[0].scope).toBe('Alcance anterior');
  expect(await page.evaluate(()=>!!localStorage.getItem('esan-emprende-demo-v1:standalone-preview'))).toBe(true);
