@@ -2,7 +2,7 @@
 import { AUTH_ENABLED } from '@/lib/project-phase';
 import { headers, cookies } from 'next/headers';
 import { supabaseServer } from '@/lib/supabase/server';
-import { institutionalEmail } from '@/lib/auth-policy';
+import { institutionalEmail, postAuthDestination } from '@/lib/auth-policy';
 export type AccessState = {status:'idle'|'error'|'sent';message:string;email?:string};
 export async function requestAccess(_previous:AccessState, form:FormData):Promise<AccessState>{
   if(!AUTH_ENABLED)return {status:'error',message:'El inicio de sesión está deshabilitado mientras preparamos la interfaz.'};
@@ -17,6 +17,8 @@ export async function requestAccess(_previous:AccessState, form:FormData):Promis
   const origin=requestHeaders.get('origin');
   if(!origin)return {status:'error',message:'Recarga esta página y vuelve a intentarlo.'};
   // Las Server Actions validan Origin contra Host para impedir solicitudes cruzadas.
+  const next=postAuthDestination(String(form.get('next')||''));
+  jar.set('esan-auth-next',next,{httpOnly:true,sameSite:'lax',secure:origin.startsWith('https:'),maxAge:15*60,path:'/'});
   const callback=new URL('/auth/callback',origin).toString();
   jar.set('esan-auth-requested',String(Date.now()),{httpOnly:true,sameSite:'lax',secure:origin.startsWith('https:'),maxAge:60,path:'/'});
   const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:callback,shouldCreateUser:true}});

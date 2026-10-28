@@ -8,11 +8,11 @@ Next.js/React/TypeScript en la raíz del repositorio, desplegada desde main en V
 
 ## Fase actual
 
-Interfaz abierta con AUTH_ENABLED=false, por instrucción del usuario: el login queda para el final. No introducir información privada. Los datos iniciales, precios y disponibilidad son ejemplos. Las propuestas propias se guardan localmente por espacio de navegador, no se sincronizan con Supabase.
+El catálogo y los perfiles de ejemplo son públicos y se exploran sin iniciar sesión. La cuenta institucional verificada se solicita al entrar a Mi negocio o publicar. En Producción, el acceso por enlace de correo devuelve al usuario a Mi negocio después de verificar su cuenta. Tienda y publicaciones propias se guardan en Supabase con restricciones RLS por propietario; los datos locales de demo no se importan automáticamente.
 
 Inicio editorial con destacados y categorías; Explorar con búsqueda normalizada por acentos, tipo, categoría, disponibilidad y precio; directorio/perfiles; favoritos; reseñas locales no verificadas; tema claro/oscuro y Ajustes con exportación/importación JSON. La navegación con hash conserva vistas/filtros e historial.
 
-Mi negocio permite crear/editar el perfil, logo y portada, canales opcionales WhatsApp/correo/red social, y gestionar publicaciones con campos por tipo. Hay imágenes propias locales, vista previa, edición estable, pausa y eliminación confirmada. El panel no muestra métricas ficticias como resultados reales; la medición sigue pendiente. Los perfiles de ejemplo no inventan contactos. Los canales propios se abren externamente y no envían mensajes automáticamente.
+Mi negocio permite crear/editar el perfil y administrar publicaciones privadas conectadas a Supabase. La edición de fotos, la publicación de perfiles y propuestas en el catálogo compartido, favoritos/reseñas entre dispositivos y métricas reales siguen pendientes. Los perfiles demo no inventan contactos; los canales propios se abren externamente y no envían mensajes automáticamente.
 
 ## Compatibilidad
 
@@ -20,4 +20,4 @@ Se preservan las claves actuales y las legacy de la demo HTML. En la vista previ
 
 ## Pendiente antes de un piloto real
 
-Reactivar y verificar Auth institucional, completar el hook de restricción de altas, crear persistencia compartida y políticas RLS por propietario, almacenamiento privado, moderación/reportes, privacidad y analítica real. Confirmar proveedor de identidad antes de SSO. La configuración Supabase se conserva, pero no valida por sí sola un login completo con una cuenta estudiantil real.
+Completar la prueba real de acceso por correo con dos cuentas institucionales y verificar aislamiento RLS. Diseñar Storage privado para imágenes, decidir qué datos de tiendas/publicaciones serán públicos y definir moderación, privacidad, reglas de comunidad y analítica antes de publicar negocios reales. Confirmar el proveedor de identidad antes de SSO.
