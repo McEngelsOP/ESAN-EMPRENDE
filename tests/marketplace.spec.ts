@@ -210,3 +210,9 @@ test('panel, edición de precio y eliminación local confirmada',async({page})=>
  await page.getByRole('button',{name:'Abrir ajustes'}).click();await page.getByRole('button',{name:'Eliminar datos locales'}).click();await expect(page.getByRole('button',{name:'Eliminar datos',exact:true})).toBeDisabled();await page.getByLabel('Escribe ELIMINAR para confirmar').fill('ELIMINAR');await page.getByRole('button',{name:'Eliminar datos',exact:true}).click();await expect(page.getByRole('status')).toContainText('Datos de esta vista eliminados.');
  await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.getByLabel('Nombre del emprendimiento')).toBeVisible();
 });
+
+test('producto agotado permanece visible y puede volver a activarse',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Mi negocio'}).click();await createBusiness(page);
+ await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();await page.getByLabel('Nombre del producto').fill('Brownie disponible');await page.getByLabel('Precio (S/)',{exact:true}).fill('12');await page.getByLabel('Descripción',{exact:true}).fill('Brownie preparado para la prueba de disponibilidad.');await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();
+ const row=page.locator('.seller-row').filter({hasText:'Brownie disponible'});await row.getByRole('button',{name:'Marcar agotado'}).click();await expect(row).toContainText('Agotado');await page.reload();await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.locator('.seller-row')).toContainText('Agotado');await page.locator('.seller-row').getByRole('button',{name:'Activar'}).click();await expect(page.locator('.seller-row')).toContainText('Disponible');
+});
