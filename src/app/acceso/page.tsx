@@ -1,7 +1,9 @@
 import { AUTH_ENABLED } from '@/lib/project-phase';
 import { redirect } from 'next/navigation';
 import MobileAccess from '@/components/mobile-access';
+import DesktopAccess from '@/components/desktop-access';
 import './mobile.css';
+import './desktop.css';
 import { supabaseServer } from '@/lib/supabase/server';
 import { allowedUser, postAuthDestination } from '@/lib/auth-policy';
 export const dynamic='force-dynamic';
@@ -12,5 +14,6 @@ export default async function AccessPage({searchParams}:{searchParams:Promise<{e
  const {error,next:requestedNext}=await searchParams;
  const next=postAuthDestination(requestedNext);
  if(client){const {data:{user}}=await client.auth.getUser();if(allowedUser(user))redirect(next)}
- return <MobileAccess configured={!!client} next={next} error={error ? (errors[error]||errors.expired) : undefined}/>;
+ const props = { configured: !!client, next, error: error ? (errors[error]||errors.expired) : undefined };
+ return <><MobileAccess {...props}/><DesktopAccess {...props}/></>;
 }
