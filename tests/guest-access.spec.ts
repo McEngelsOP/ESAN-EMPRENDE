@@ -4,22 +4,22 @@ const authEnabled=process.env.ESAN_AUTH_ENABLED==='true';
 
 test.skip(!authEnabled,'Solo aplica con la autenticación institucional activada.');
 
-test('el catálogo es público y Mi negocio solicita verificación institucional',async({page})=>{
+test('el catálogo es público y Mi negocio solicita verificación institucional',async({page,isMobile})=>{
  await page.goto('/');
  await expect(page).toHaveURL(/\/$/);
  await expect(page.locator('.product-card')).toHaveCount(12);
  await expect(page.locator('.demo-strip')).toContainText('Vista de visitante');
  await expect(page.getByRole('button',{name:'Cerrar sesión'})).toHaveCount(0);
 
- await page.getByRole('button',{name:'Mi negocio',exact:true}).click();
+ await page.locator('.account-avatar').click();await page.getByRole('menuitem',{name:'Crear o gestionar mi negocio',exact:true}).click();
  await expect(page).toHaveURL(/\/acceso\?next=/);
- await expect(page.getByRole('heading',{name:'Bienvenido de nuevo.'})).toBeVisible();
- await expect(page.locator('.mobile-login-form input[name="next"]')).toHaveValue('/#/mi-emprendimiento');
- await expect(page.getByRole('button',{name:'Iniciar sesión',exact:true})).toBeDisabled();
+ await expect(page.getByRole('heading',{name:isMobile?'Bienvenido de nuevo.':'Tu próxima idea empieza aquí.'})).toBeVisible();
+ await expect(page.locator(isMobile?'.mobile-login-form input[name="next"]':'.ea-form input[name="next"]')).toHaveValue('/#/mi-emprendimiento');
+ await expect(page.locator(isMobile?'.mobile-login-form button[type=submit]':'.ea-form button[type=submit]')).toBeDisabled();
 });
 
-test('un enlace directo a Mi negocio también pide iniciar sesión',async({page})=>{
+test('un enlace directo a Mi negocio también pide iniciar sesión',async({page,isMobile})=>{
  await page.goto('/#/mi-emprendimiento');
  await expect(page).toHaveURL(/\/acceso\?next=/);
- await expect(page.getByRole('heading',{name:'Bienvenido de nuevo.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:isMobile?'Bienvenido de nuevo.':'Tu próxima idea empieza aquí.'})).toBeVisible();
 });

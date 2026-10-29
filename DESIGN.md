@@ -43,3 +43,6 @@ Corrección solicitada: el login móvil es estático, sin scroll exterior ni int
 
 ## Acceso de escritorio con ventana y flores
 La vista de escritorio comparte el formulario y los estados de acceso del móvil: correo por enlace, invitado, Google, creación y recuperación. Desde 761 px usa la imagen original login-window.jpg sin recompresión como fondo completo, con el panel translúcido a la izquierda (máximo 440 px, margen lateral fluido 24–96 px). El panel permanece dentro de la altura visible y adapta densidad sin scroll. Móvil conserva la imagen del árbol y su distribución estática. La imagen anterior permanece versionada junto a la nueva.
+
+## Diseño vigente: integración de los HTML aprobados
+El entorno usa blanco #ffffff en fondos y superficies, tinta #243d30, texto secundario #536358 y bordes #dce3de. Solo existe modo claro. Inicio conserva el banner ilustrado compacto, el carrusel de emprendimientos, el catálogo con filtros locales, los bloques de servicios e ideas, las categorías en penúltimo lugar y la invitación final. El encabezado usa marca, buscador con sugerencias y menú de cuenta; Favoritos usa el tablero con filtros y deshacer. Los estilos canónicos están en globals.css; editorial.css queda como referencia histórica sin importación.

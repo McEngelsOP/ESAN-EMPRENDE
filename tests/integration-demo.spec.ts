@@ -18,18 +18,18 @@ test('migra la demo anterior sin borrar favoritos ni reseñas y no los resucita'
  await page.goto('/');await expect(page.locator('.product-card')).toHaveCount(13);
  await page.getByRole('button',{name:'Quitar de favoritos: Cookies de chocolate',exact:true}).click();
  await page.reload();await expect(page.getByRole('button',{name:'Añadir a favoritos: Cookies de chocolate',exact:true})).toBeVisible();
- await page.getByRole('button',{name:'Mi negocio',exact:true}).click();await expect(page.locator('.seller-business-name')).toHaveText('Mi taller anterior');await expect(page.locator('.seller-list')).toContainText('Publicación anterior');
+ await page.locator('.account-avatar').click();await page.getByRole('menuitem',{name:'Mi negocio',exact:true}).click();await expect(page.locator('.seller-business-name')).toHaveText('Mi taller anterior');await expect(page.locator('.seller-list')).toContainText('Publicación anterior');
  const raw=await page.evaluate(()=>JSON.parse(localStorage.getItem('esan-emprende-demo-v1:interface-preview')||'{}'));
  expect(raw.unknownEnvelope).toBe('conservar');expect(raw.reviews).toHaveLength(1);expect(raw.products[0].scope).toBe('Alcance anterior');
  expect(await page.evaluate(()=>!!localStorage.getItem('esan-emprende-demo-v1:standalone-preview'))).toBe(true);
 });
 
-test('reseña local y tema persisten al recargar',async({page})=>{
+test('reseña local persiste y la interfaz mantiene el modo claro',async({page})=>{
  await page.goto('/');await page.getByRole('button',{name:'Cookies de chocolate',exact:true}).click();
  await page.getByRole('radio',{name:'4 estrellas',exact:true}).check();await page.getByLabel('Tu reseña',{exact:true}).fill('Me interesa esta propuesta de prueba.');
  await page.getByRole('button',{name:'Guardar reseña',exact:true}).click();await expect(page.locator('.review-list')).toContainText('Me interesa esta propuesta');
- await page.keyboard.press('Escape');await page.getByRole('button',{name:'Usar tema oscuro',exact:true}).click();
- await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await page.reload();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+ await page.keyboard.press('Escape');
+ await expect(page.locator('html')).toHaveAttribute('data-theme','light');await page.reload();await expect(page.locator('html')).toHaveAttribute('data-theme','light');
  await page.getByRole('button',{name:'Cookies de chocolate',exact:true}).click();await expect(page.locator('.review-list')).toContainText('Me interesa esta propuesta');
 });
 

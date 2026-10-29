@@ -25,7 +25,7 @@ for(const family of ['manrope','dm-sans'])for(const weight of [400,500,600,700,8
  css=css.replace(/src:[\s\S]*?;/,`src:url(data:font/woff2;base64,${data}) format('woff2');`);
  fonts+=css;
 }
-const css=(await readFile(path.join(root,'src/app/globals.css'),'utf8'))+'\n'+(await readFile(path.join(root,'src/app/editorial.css'),'utf8'));
+const css=(await readFile(path.join(root,'src/app/globals.css'),'utf8'));
 const script=bundled.outputFiles[0].text.replaceAll('</script','<\\/script');
-const html=`<!doctype html>\n<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="ESAN Emprende: demostración local sin conexión."><title>ESAN Emprende · Demo local</title><style>${fonts}\n${css}</style></head><body><div id="app"></div><noscript>Activa JavaScript para explorar esta demostración local.</noscript><script>${script}</script></body></html>`;
+const html=`<!doctype html>\n<html lang="es" data-theme="light" style="color-scheme:light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="ESAN Emprende: demostración local sin conexión."><title>ESAN Emprende · Demo local</title><style>${fonts}\n${css}</style></head><body><div id="app"></div><noscript>Activa JavaScript para explorar esta demostración local.</noscript><script>${script}</script></body></html>`;
 await writeFile(output,html);console.log(JSON.stringify({output,bytes:Buffer.byteLength(html)}));
