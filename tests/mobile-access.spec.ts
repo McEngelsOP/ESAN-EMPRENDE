@@ -22,10 +22,10 @@ test('el acceso conserva invitado y cambia entre crear y recuperar cuenta', asyn
 test('cada versión conserva su fondo y el panel estático completo', async ({ page, isMobile }) => {
   await page.goto('/acceso');
   if (isMobile) {
-    await expect(page.locator('.mobile-access')).toBeVisible();
+    await expect(page.locator('.mobile-access')).toBeVisible();await expect(page.locator('.mobile-login-form > label')).toHaveCSS('color','rgb(246, 245, 233)');
     expect(await page.locator('.mobile-access').evaluate(el => getComputedStyle(el, '::before').backgroundImage)).toContain('login-tree.jpg');
   } else {
-    await expect(page.locator('.editorial-access')).toBeVisible();
+    await expect(page.locator('.editorial-access')).toBeVisible();await expect(page.locator('.ea-main')).toHaveCSS('background-color','rgba(0, 0, 0, 0)');await expect(page.locator('.ea-main')).toHaveCSS('color','rgb(241, 240, 235)');
     await expect(page.locator('.ea-art img')).toHaveAttribute('src', '/images/login-mountains.png');
   }
   if (isMobile) {

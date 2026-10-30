@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { ProductImage } from "./product-image";
 import { initialProducts } from "@/lib/data";
 import { Coffee } from "lucide-react";
 import { Shirt } from "lucide-react";
@@ -15,31 +16,6 @@ import { Play } from "lucide-react";
 import { Pause } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { ArrowRight } from "lucide-react";
-var Gl = [{
-  product: initialProducts[0],
-  title: "Una pausa con mucho chocolate.",
-  description: "Cookies y repostería para compartir entre clases. Conoce todo lo que prepara Miga & Mood.",
-  short: "El antojo entre clases",
-  tone: "cocoa"
-}, {
-  product: initialProducts[1],
-  title: "Lleva tu estilo a todas partes.",
-  description: "Accesorios y merchandising creados para acompañar tus días en la U. Descubre Entre Clases.",
-  short: "Estilo que va contigo",
-  tone: "sage"
-}, {
-  product: initialProducts[8],
-  title: "Tu idea merece estar en línea.",
-  description: "Páginas web y soluciones digitales para dar el siguiente paso con tu emprendimiento.",
-  short: "Soluciones tech",
-  tone: "digital"
-}, {
-  product: initialProducts[10],
-  title: "La próxima gran idea puede ser tuya.",
-  description: "Descubre proyectos en construcción y conecta con estudiantes que buscan colaboradores.",
-  short: "Ideas que nos conectan",
-  tone: "ideas"
-}];
 var HV_SCENE = "<svg class=\"hv-cloud c1\" viewBox=\"0 0 200 80\" width=\"190\"><g fill=\"#fff\"><ellipse cx=\"100\" cy=\"56\" rx=\"86\" ry=\"18\"/><circle cx=\"62\" cy=\"42\" r=\"22\"/><circle cx=\"98\" cy=\"32\" r=\"28\"/><circle cx=\"138\" cy=\"44\" r=\"20\"/></g></svg><svg class=\"hv-cloud c2\" viewBox=\"0 0 200 80\" width=\"130\"><g fill=\"#fff\"><ellipse cx=\"100\" cy=\"56\" rx=\"86\" ry=\"18\"/><circle cx=\"62\" cy=\"42\" r=\"22\"/><circle cx=\"98\" cy=\"32\" r=\"28\"/><circle cx=\"138\" cy=\"44\" r=\"20\"/></g></svg><svg class=\"hv-cloud c3\" viewBox=\"0 0 200 80\" width=\"90\"><g fill=\"#fff\"><ellipse cx=\"100\" cy=\"56\" rx=\"86\" ry=\"18\"/><circle cx=\"62\" cy=\"42\" r=\"22\"/><circle cx=\"98\" cy=\"32\" r=\"28\"/><circle cx=\"138\" cy=\"44\" r=\"20\"/></g></svg><svg class=\"hv-hill h1\" viewBox=\"0 0 1440 260\" preserveAspectRatio=\"xMidYMax slice\"><path class=\"mt\" d=\"M0 150 L90 108 L170 138 L290 78 L390 128 L480 100 L610 150 L730 90 L850 140 L970 84 L1090 140 L1210 100 L1330 140 L1440 112 L1440 260 L0 260Z\"/></svg><svg class=\"hv-hill h2\" viewBox=\"0 0 1440 260\" preserveAspectRatio=\"xMidYMax slice\"><path class=\"md\" d=\"M0 165 C200 110 380 145 560 128 C760 110 980 156 1180 124 C1300 106 1380 122 1440 134 L1440 260 L0 260Z\"/></svg><svg class=\"hv-hill h3\" viewBox=\"0 0 1440 260\" preserveAspectRatio=\"xMidYMax slice\"><path class=\"fr\" d=\"M0 150 C180 128 380 124 600 140 C840 158 1100 146 1440 126 L1440 260 L0 260Z\"/><path class=\"st\" d=\"M40 190 C300 170 520 176 760 188 M120 215 C380 196 640 204 900 214 M600 175 C860 168 1100 176 1340 160 M900 236 C1100 224 1280 226 1420 214\" fill=\"none\"/></svg><svg class=\"hv-tree\" viewBox=\"0 0 120 120\" width=\"84\"><ellipse cx=\"60\" cy=\"112\" rx=\"40\" ry=\"6\" fill=\"#2a4a2c\" opacity=\".5\"/><g class=\"sway\"><rect x=\"56\" y=\"62\" width=\"8\" height=\"50\" rx=\"3\" fill=\"#3b2a1c\"/><circle cx=\"60\" cy=\"40\" r=\"30\" fill=\"#2f5a33\"/><circle cx=\"38\" cy=\"54\" r=\"22\" fill=\"#3d6d3a\"/><circle cx=\"84\" cy=\"54\" r=\"22\" fill=\"#3d6d3a\"/><circle cx=\"62\" cy=\"24\" r=\"20\" fill=\"#4d8043\"/><circle cx=\"46\" cy=\"36\" r=\"12\" fill=\"#5a9049\" opacity=\".8\"/></g></svg>";
 var hvTc = ["#b3432f", "#a8514a", "#8f6410", "#3f6b3d", "#2f6a86", "#bd302f"];
 var hvIc = {
@@ -219,6 +195,12 @@ export function HomeShowcase({
   counts: counts,
   products = initialProducts
 }) {
+  const slides = React.useMemo(() => {
+    const live = products.filter(p => p.available);
+    const picked = [live.find(p => p.category === 'Comida y bebidas'), live.find(p => p.category === 'Moda y accesorios'), live.find(p => p.kind === 'Servicio'), live.find(p => p.kind === 'Idea')];
+    const unique = [...new Map([...picked, ...live].filter(Boolean).map(p => [p.id,p])).values()].slice(0,4);
+    return unique.map(p => ({product:p,title:p.name,short:p.kind==='Idea'?'Una idea que busca equipo':p.kind==='Servicio'?'Talento de nuestra comunidad':p.category,tone:p.kind==='Idea'?'ideas':p.kind==='Servicio'?'digital':p.category==='Comida y bebidas'?'cocoa':'sage'}));
+  }, [products]);
   let rm = hvRm(),
     hid = hvHidden(),
     root = React.useRef(null),
@@ -236,17 +218,17 @@ export function HomeShowcase({
     [hold, setHold] = React.useState(!1),
     [paused, setPaused] = React.useState(!1),
     [wi, setWi] = React.useState(0),
-    n = Gl.length,
+    n = Math.max(1,slides.length),
     play = !rm && !hold && !hid && !paused,
     nStores = React.useMemo(() => hvStores(products).length, [products]);
   hvReveal(root, rm);
   React.useEffect(() => {
-    if (!play) return;
+    if (!play || slides.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let t = setTimeout(() => setA(x => (x + 1) % n), 5200);
     return () => clearTimeout(t);
-  }, [a, play, n]);
+  }, [a, play, n, slides.length]);
   React.useEffect(() => {
-    if (rm || hid || paused) return;
+    if (rm || hid || paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let t = setInterval(() => setWi(x => (x + 1) % hvWords.length), 2600);
     return () => clearInterval(t);
   }, [rm, hid, paused]);
@@ -286,27 +268,23 @@ export function HomeShowcase({
     tick = [...cats, ...cats];
   return <div className={"hv" + (paused ? " is-paused" : "")} ref={root}><section className="hv-hero" ref={hero} aria-label="Bienvenida" onPointerMove={mv} onPointerLeave={lv}><i className="hv-blob b1" aria-hidden="true" /><i className="hv-blob b2" aria-hidden="true" /><i className="hv-blob b3" aria-hidden="true" /><div className="hv-scene" aria-hidden="true" dangerouslySetInnerHTML={{
         __html: HV_SCENE
-      }} /><div className="hv-copy"><span className="hv-eyebrow hv-in" style={{
-          "--i": 0
-        }}><i className="hv-live" />{"Comunidad ESAN · Inicio"}</span><h1 className="hv-title hv-in" style={{
+      }} /><div className="hv-copy"><h1 className="hv-title hv-in" style={{
           "--i": 1
         }} aria-label="Descubre algo nuevo en tu comunidad ESAN"><span aria-hidden="true">{"Descubre algo"}</span><span className="hv-wordwrap" aria-hidden="true"><span className="hv-word" key={wi}>{hvWords[wi] + "."}</span></span></h1><p className="hv-lead hv-in" style={{
           "--i": 2
         }}>{"Lo que nace en ESAN, en un solo lugar: productos, servicios e ideas de tu comunidad."}</p><div className="hv-cta hv-in" style={{
           "--i": 3
-        }}><button type="button" className="hv-btn solid" onClick={onExplore} onPointerMove={hvMag} onPointerLeave={hvMagOut}>{"Explorar propuestas"}<ArrowRight size={18} /></button><button type="button" className="hv-btn line" onClick={onStores} onPointerMove={hvMag} onPointerLeave={hvMagOut}>{"Ver emprendimientos"}</button></div><div className="hv-stats hv-in" style={{
-          "--i": 4
-        }}><div><strong><HvNum to={products.length} rm={rm} /></strong><span>{"propuestas"}</span></div><div><strong><HvNum to={nStores} rm={rm} /></strong><span>{"emprendimientos"}</span></div><div><strong><HvNum to={cats.length} rm={rm} /></strong><span>{"categorías"}</span></div></div><span className="hv-demo hv-in" style={{
+        }}><button type="button" className="hv-btn solid" onClick={onExplore} onPointerMove={hvMag} onPointerLeave={hvMagOut}>{"Explorar propuestas"}<ArrowRight size={18} /></button><button type="button" className="hv-btn line" onClick={onStores} onPointerMove={hvMag} onPointerLeave={hvMagOut}>{"Ver emprendimientos"}</button></div><div className="hv-community-summary"><span><strong>{products.length}</strong> propuestas</span><span><strong>{nStores}</strong> emprendimientos</span><span><strong>{cats.length}</strong> categorías</span></div><span className="hv-demo hv-in" style={{
           "--i": 5
-        }}>{"Selección de ejemplo · Sin ventas registradas"}</span></div><div className="hv-stage" onMouseEnter={() => setHold(!0)} onMouseLeave={() => setHold(!1)} onFocusCapture={() => setHold(!0)} onBlurCapture={() => setHold(!1)}><i className="hv-ring r1" aria-hidden="true" /><i className="hv-ring r2" aria-hidden="true" /><div className="hv-stack" role="group" aria-roledescription="carrusel" aria-label="Destacados de la comunidad">{Gl.map((s, i) => {
-            let r = (i - a + n) % n,
+        }}>{"Selección de ejemplo · Sin ventas registradas"}</span></div><div className="hv-stage" onMouseEnter={() => setHold(!0)} onMouseLeave={() => setHold(!1)} onFocusCapture={() => setPaused(true)}><i className="hv-ring r1" aria-hidden="true" /><i className="hv-ring r2" aria-hidden="true" /><div className="hv-stack" role="group" aria-roledescription="carrusel" aria-label="Destacados de la comunidad">{slides.map((s, i) => {
+            let r = (i - a % n + n) % n,
               Ic = hvToneIc[s.tone] || Lightbulb;
             return <button key={s.product.id} type="button" className="hv-card" data-r={r} aria-label={(r === 0 ? "Conocer " : "Ver ") + s.product.store + ": " + s.short} onClick={() => r === 0 ? onOpenStore(s.product.store) : setA(i)}><span className={"hv-card-in hv-t-" + s.tone} style={{
                 "--d": i * -1.4 + "s"
-              }}><Ic className="hv-bigic" size={230} strokeWidth={.9} aria-hidden="true" /><span className="hv-card-top"><span className="hv-ic"><Ic size={26} strokeWidth={1.6} /></span><span className="hv-chip">{s.product.store}</span></span><span className="hv-card-bot"><span className="hv-h">{s.title}</span><span className="hv-p">{s.short}</span><span className="hv-go">{"Conocer emprendimiento"}<ArrowUpRight size={16} /></span></span></span></button>;
-          })}</div><button type="button" className="hv-pause" onClick={() => setPaused(v => !v)} aria-pressed={paused} aria-label={paused ? "Reanudar destacados" : "Pausar destacados"}>{hvh(paused ? Play : Pause, {
+              }}>{s.product.image && !['tech','idea'].includes(s.product.image) ? <span className="hv-feature-media"><ProductImage src={s.product.image} alt={s.product.name} sizes="(max-width:760px) 240px, 320px" preload={i===0}/></span> : <Ic className="hv-bigic" size={140} strokeWidth={.9} aria-hidden="true" />}<span className="hv-card-top"><span className="hv-ic"><Ic size={26} strokeWidth={1.6} /></span><span className="hv-chip">{s.product.store}</span></span><span className="hv-card-bot"><span className="hv-h">{s.title}</span><span className="hv-p">{s.short}</span><span className="hv-go">{"Conocer emprendimiento"}<ArrowUpRight size={16} /></span></span></span></button>;
+          })}{!slides.length&&<div className="hv-no-feature"><Lightbulb size={42}/><h2>El espacio está listo para tu idea.</h2><p>Crea una propuesta o restaura los ejemplos desde Ajustes.</p></div>}</div>{slides.length>1&&<><button type="button" className="hv-pause" onClick={() => setPaused(v => !v)} aria-pressed={paused} aria-label={paused ? "Reanudar destacados" : "Pausar destacados"}>{hvh(paused ? Play : Pause, {
             size: 16
-          })}</button><div className="hv-dots" role="group" aria-label="Elegir destacado">{Gl.map((s, i) => <button key={i} type="button" aria-label={"Ver " + s.product.store} aria-pressed={i === a} className={i === a ? "on" : ""} onClick={() => setA(i)}><i key={a + "-" + play} className={play && i === a ? "run" : ""} /></button>)}</div></div><div className="hv-ticker" aria-hidden="true"><div className="hv-ticker-track">{tick.map((c, i) => <span key={i}><b />{c}</span>)}</div></div></section><HvRail onOpen={onOpenStore} rm={rm} products={products} /></div>;
+          })}</button><div className="hv-dots" role="group" aria-label="Elegir destacado">{slides.map((s, i) => <button key={i} type="button" aria-label={"Ver " + s.product.store} aria-pressed={i === a % n} className={i === a % n ? "on" : ""} onClick={() => setA(i)}><i key={a + "-" + play} className={play && i === a % n ? "run" : ""} /></button>)}</div></>}</div><div className="hv-ticker" aria-hidden="true"><div className="hv-ticker-track">{tick.map((c, i) => <span key={i}><b />{c}</span>)}</div></div></section><HvRail onOpen={onOpenStore} rm={rm} products={products} /></div>;
 }
 export function HomeEnding({
   onServices: onServices,

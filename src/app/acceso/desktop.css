@@ -9,7 +9,7 @@
   .ea-brand { display:inline-flex; align-items:center; gap:10px; color:var(--ea-ink); text-decoration:none; }
   .ea-brand svg { color:#d7bd83; flex-shrink:0; }
   .ea-brand span { font-family:Georgia,'Times New Roman',serif; font-size:28px; letter-spacing:-.025em; }
-  .editorial-access .ea-main { width:100%; max-width:1580px; min-height:0; margin:0 auto; display:grid; grid-template-columns:1.08fr 1fr; gap:clamp(40px,6vw,116px); align-items:center; padding:28px 0; }
+  .editorial-access .ea-main { background:transparent; color:var(--ea-ink); width:100%; max-width:1580px; min-height:0; margin:0 auto; display:grid; grid-template-columns:1.08fr 1fr; gap:clamp(40px,6vw,116px); align-items:center; padding:28px 0; }
   .ea-content { width:100%; min-width:0; text-align:center; }
   .ea-heading h1,.ea-sent h1 { font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:clamp(38px,4.3vw,76px); line-height:1.08; letter-spacing:-.035em; text-wrap:balance; margin:0 auto 20px; max-width:750px; color:var(--ea-ink); }
   .ea-heading>p { font-family:Georgia,'Times New Roman',serif; font-size:clamp(16px,1.55vw,25px); line-height:1.4; color:var(--ea-ink); margin:0 0 34px; max-width:none; }

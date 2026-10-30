@@ -1,0 +1,2 @@
+import type { Product } from '@/lib/data';
+export function OfferDetails({product}:{product:Product}){return <dl className="offer-details">{(product.kind==='Servicio'?[['Qué incluye',product.scope],['Plazo estimado',product.timeline]]:product.kind==='Idea'?[['Etapa',product.stage],['Buscamos',product.collaborators]]:[['Entrega y disponibilidad',product.fulfillment]]).filter(([,v])=>v).map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>}

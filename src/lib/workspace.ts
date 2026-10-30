@@ -2,6 +2,7 @@ import type { Business } from './business';
 import type { Product } from './data';
 
 export type Review = {
+  sampleSet?: string;
   id: string;
   productId: string;
   rating: number;

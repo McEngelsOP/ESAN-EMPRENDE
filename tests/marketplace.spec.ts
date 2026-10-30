@@ -60,17 +60,17 @@ test('categoría → perfil completo, sin filtros heredados ni tiendas duplicada
 test('carrusel automático, pausa y selección manual',async({page})=>{
  await page.clock.install();
  await page.goto('/');
- await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Una pausa con mucho chocolate.');
+ await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Cookies de chocolate');
  await expect(page.getByRole('button',{name:'Pausar destacados',exact:true})).toBeVisible();
  await page.clock.runFor(100);
  await page.clock.fastForward(6500);
- await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Lleva tu estilo');
+ await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Mochila para todos tus planes');
  await page.getByRole('button',{name:'Pausar destacados',exact:true}).click();
  const paused=await page.locator('.hv-card[data-r="0"] .hv-h').textContent();
  await page.clock.fastForward(13000);
  await expect(page.locator('.hv-card[data-r="0"] .hv-h')).toHaveText(paused!);
  await page.locator('.hv-dots').getByRole('button',{name:'Ver Nodo Studio',exact:true}).click();
- await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Tu idea merece estar en línea.');
+ await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Tu primera página web');
  await page.locator('.hv-card[data-r="0"]').click();
  await expect(page.locator('.store-profile h1')).toHaveText('Nodo Studio');
 });
@@ -78,9 +78,9 @@ test('movimiento reducido conserva selección manual sin rotación',async({page}
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.clock.install(); await page.goto('/');
  await page.clock.fastForward(13000);
- await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Una pausa con mucho chocolate.');
+ await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Cookies de chocolate');
  await page.locator('.hv-dots').getByRole('button',{name:'Ver Entre Clases',exact:true}).click();
- await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Lleva tu estilo');
+ await expect(page.locator('.hv-card[data-r="0"]')).toContainText('Mochila para todos tus planes');
 });
 test('publicar idea sin precio y conservarla al recargar',async({page})=>{
  await page.goto('/');await account(page,'Mi negocio');
@@ -101,7 +101,7 @@ test('publicar idea sin precio y conservarla al recargar',async({page})=>{
 
 test('editar perfil y publicación conserva identidad, confirmar eliminación',async({page})=>{
  await page.goto('/');await account(page,'Mi negocio');await createBusiness(page);
- await page.getByRole('button',{name:'Ver mi perfil'}).click();
+ await page.getByRole('button',{name:'Ver como visitante',exact:true}).first().click();
  await expect(page.locator('.store-profile h1')).toHaveText('Taller de prueba');
  await account(page,'Mi negocio');
  await page.getByRole('button',{name:'Nueva publicación'}).click();
@@ -118,7 +118,7 @@ test('editar perfil y publicación conserva identidad, confirmar eliminación',a
  await page.getByRole('button',{name:'Revisar publicación'}).click();
  await page.getByRole('button',{name:'Guardar cambios'}).click();
  await expect(page.locator('.seller-row')).toHaveCount(1);
- await page.getByRole('button',{name:'Resumen',exact:true}).click();await page.getByRole('button',{name:'Editar perfil'}).click();
+ await page.getByRole('button',{name:'Resumen',exact:true}).click();await page.getByRole('button',{name:'Editar la presentación de mi tienda'}).click();
  await page.getByLabel('Nombre del emprendimiento').fill('Taller actualizado');
  await page.getByRole('button',{name:'Guardar perfil'}).click();
  await page.reload();await account(page,'Mi negocio');
@@ -156,7 +156,7 @@ test('servicio a cotizar, borrador descartable y vista adaptable',async({page},i
 
 test('ilustraciones adaptables y controles móviles accesibles',async({page},info)=>{
  const requested:string[]=[];page.on('request',r=>requested.push(r.url()));await page.goto('/');
- await expect(page.locator('.hv-hero')).toBeVisible();await expect(page.locator('.product-card .discovery-art')).toHaveCount(12);
+ await expect(page.locator('.hv-hero')).toBeVisible();await expect(page.locator('.product-card .image-frame')).toHaveCount(9);await expect(page.locator('.product-card .offer-art')).toHaveCount(3);
  expect(requested.some(u=>u.includes('products-sheet.png'))).toBe(false);
  const favorite=await page.locator('.favorite').first().boundingBox();expect(favorite!.width).toBeGreaterThanOrEqual(44);expect(favorite!.height).toBeGreaterThanOrEqual(44);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -168,7 +168,7 @@ test('galería local: tres fotos, principal, edición y persistencia',async({pag
  await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();
  await page.getByLabel('Nombre del producto').fill('Galería de prueba');await page.getByLabel('Precio (S/)',{exact:true}).fill('18.50');
  await page.getByLabel('Descripción',{exact:true}).fill('Una publicación de prueba con varias imágenes.');
- for(const image of ['cookies','bag','plant']) await page.locator('.photo-upload input').setInputFiles(`public/images/demo-v1/${image}.webp`);
+ for(const [index,image] of ['cookies','bag','plant'].entries()){await expect(page.locator('.photo-upload input')).toBeEnabled();await page.locator('.photo-upload input').setInputFiles(`public/images/demo-v1/${image}.webp`);await expect(page.locator('.offer-photo')).toHaveCount(index+1);}
  await expect(page.locator('.offer-photo')).toHaveCount(3);await expect(page.locator('.photo-upload')).toHaveCount(0);
  await page.getByRole('button',{name:'Usar como principal'}).last().click();
  await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();
@@ -206,5 +206,5 @@ test('producto agotado permanece visible y puede volver a activarse',async({page
 test('errores en línea y eliminación desde el editor',async({page})=>{
  await page.goto('/');await account(page,'Mi negocio');await createBusiness(page);
  await page.getByRole('button',{name:'Nueva publicación',exact:true}).click();await page.getByRole('button',{name:'Revisar publicación'}).click();await expect(page.locator('#offer-errors')).toContainText('Revisa 3 campos');await expect(page.locator('#offer-name')).toHaveAttribute('aria-invalid','true');
- await page.getByLabel('Nombre del producto').fill('Prueba de edición');await page.getByLabel('Precio (S/)',{exact:true}).fill('20');await page.getByLabel('Descripción',{exact:true}).fill('Descripción completa de la publicación.');await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();await expect(page.locator('.saved-offer-banner')).toContainText('Producto guardado');await page.locator('.seller-row-actions').getByRole('button',{name:'Editar',exact:true}).click();await page.getByRole('button',{name:'Eliminar producto',exact:true}).click();await expect(page.getByRole('dialog')).toContainText('Prueba de edición');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);await expect(page.getByLabel('Nombre del producto')).toHaveValue('Prueba de edición');await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new DOMException('Sin espacio','QuotaExceededError')}});await page.getByRole('button',{name:'Eliminar producto',exact:true}).click();await page.getByRole('button',{name:'Confirmar eliminación'}).click();await expect(page.getByRole('dialog').getByRole('alert')).toContainText('No se pudo eliminar');
+ await page.getByLabel('Nombre del producto').fill('Prueba de edición');await page.getByLabel('Precio (S/)',{exact:true}).fill('20');await page.getByLabel('Descripción',{exact:true}).fill('Descripción completa de la publicación.');await page.getByRole('button',{name:'Revisar publicación'}).click();await page.getByRole('button',{name:'Publicar en la demo'}).click();await expect(page.locator('.saved-offer-banner')).toContainText('Publicación guardada');await page.locator('.seller-row-actions').getByRole('button',{name:'Editar',exact:true}).click();await page.getByRole('button',{name:'Eliminar producto',exact:true}).click();await expect(page.getByRole('dialog')).toContainText('Prueba de edición');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);await expect(page.getByLabel('Nombre del producto')).toHaveValue('Prueba de edición');await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new DOMException('Sin espacio','QuotaExceededError')}});await page.getByRole('button',{name:'Eliminar producto',exact:true}).click();await page.getByRole('button',{name:'Confirmar eliminación'}).click();await expect(page.getByRole('dialog').getByRole('alert')).toContainText('No se pudo eliminar');
 });

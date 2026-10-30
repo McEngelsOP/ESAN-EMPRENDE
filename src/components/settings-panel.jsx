@@ -1,176 +1,62 @@
-"use client";
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, ArrowUpRight, Check, Download, FlaskConical, LifeBuoy, Settings, ShieldCheck, Store, Trash2, Upload } from 'lucide-react';
+import { parseWorkspace } from '@/lib/workspace';
+import { isSampleRecord } from '@/lib/demo-content';
+import { ActionDialog } from './action-dialog';
 
-import React from "react";
-import { Download } from "lucide-react";
-import { Check } from "lucide-react";
-import { parseWorkspace } from "@/lib/workspace";
-import { Store } from "lucide-react";
-import { ActionDialog } from "./action-dialog";
-import { Settings } from "lucide-react";
-import { Upload } from "lucide-react";
-import { Trash2 } from "lucide-react";
-import { Eye } from "lucide-react";
-export function SettingsPanel({
-  authenticated = !1,
-  authRequired = false,
-  workspace: workspace,
-  onImport: onImport,
-  onClear: onClear
-}) {
-  let [n, i] = (0, React.useState)(""),
-    [d, s] = (0, React.useState)(!1),
-    [L, x] = (0, React.useState)(""),
-    [f, p] = (0, React.useState)(""),
-    y = (0, React.useRef)(null);
-  function A() {
-    let E = URL.createObjectURL(new Blob([JSON.stringify(workspace, null, 2)], {
-        type: "application/json"
-      })),
-      m = document.createElement("a");
-    m.href = E, m.download = "esan-emprende-datos.json", m.click(), setTimeout(() => URL.revokeObjectURL(E), 1e3), i("Copia descargada. Puedes importarla en otro navegador.");
-  }
-  const [sxEx, sxSetEx] = (0, React.useState)(!1),
-    [sxDr, sxSetDr] = (0, React.useState)(!1),
-    [sxAct, sxSetAct] = (0, React.useState)("cuenta"),
-    [sxP, sxSetP] = (0, React.useState)(0),
-    sxBar = (0, React.useRef)(null),
-    sxLock = (0, React.useRef)(0),
-    sxLast = (0, React.useRef)("");
-  n && (sxLast.current = n);
-  (0, React.useEffect)(() => {
-    if (!n) return;
-    let q = setTimeout(() => i(""), 5200);
-    return () => clearTimeout(q);
-  }, [n]);
-  (0, React.useEffect)(() => {
-    let red = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches,
-      els = [...document.querySelectorAll(".sx-card")];
-    const go = () => {
-      if (red) {
-        sxSetP(1);
-        return;
-      }
-      let t0 = performance.now(),
-        tick = now => {
-          let k = Math.min(1, (now - t0) / 1000);
-          sxSetP(1 - Math.pow(1 - k, 3)), k < 1 && requestAnimationFrame(tick);
-        };
-      requestAnimationFrame(tick);
-    };
-    if (!("IntersectionObserver" in window)) {
-      els.forEach(el => el.classList.add("in")), sxSetP(1);
-      return;
-    }
-    let io = new IntersectionObserver(en => en.forEach(x => {
-        if (x.isIntersecting) {
-          x.target.classList.add("in"), x.target.id === "sx-datos" && go(), io.unobserve(x.target);
-        }
-      }), {
-        threshold: .1
-      }),
-      sp = new IntersectionObserver(en => en.forEach(x => {
-        x.isIntersecting && Date.now() > sxLock.current && sxSetAct(x.target.id.slice(3));
-      }), {
-        rootMargin: "-30% 0px -60% 0px"
-      });
-    els.forEach(el => {
-      io.observe(el), sp.observe(el);
-    });
-    return () => {
-      io.disconnect(), sp.disconnect();
-    };
-  }, []);
-  (0, React.useEffect)(() => {
-    let bar = sxBar.current;
-    if (!bar) return;
-    let bt = bar.querySelector("[data-k=\"" + sxAct + "\"]");
-    if (!bt) return;
-    bar.style.setProperty("--ix", bt.offsetLeft + "px"), bar.style.setProperty("--iw", bt.offsetWidth + "px"), bar.scrollWidth > bar.clientWidth && bar.scrollTo({
-      left: bt.offsetLeft - bar.clientWidth / 2 + bt.offsetWidth / 2,
-      behavior: "smooth"
-    });
-  }, [sxAct]);
-  return <section className="settings-page sx-page"><div className="sx-hero"><span className="sx-eyebrow">{"Ajustes"}</span><h1 className="sx-title"><span className="sx-w" style={{
-          "--i": 0
-        }}>{"Tu "}</span><span className="sx-w" style={{
-          "--i": 1
-        }}>{"espacio, "}</span><span className="sx-w" style={{
-          "--i": 2
-        }}>{"a "}</span><span className="sx-w" style={{
-          "--i": 3
-        }}>{"tu "}</span><span className="sx-w" style={{
-          "--i": 4
-        }}>{"manera."}</span></h1><p className="sx-sub">{"Gestiona tu espacio y conserva lo que has creado."}</p></div><div className="sx-tabswrap"><div className="sx-tabs" ref={sxBar} role="group" aria-label="Secciones de ajustes"><span className="sx-ind" aria-hidden="true" /><button type="button" className="sx-tab" data-k="cuenta" aria-current={sxAct === "cuenta" ? "true" : void 0} onClick={() => {
-          sxLock.current = Date.now() + 1200, sxSetAct("cuenta"), document.getElementById("sx-cuenta")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        }}>{"Cuenta"}</button><button type="button" className="sx-tab" data-k="datos" aria-current={sxAct === "datos" ? "true" : void 0} onClick={() => {
-          sxLock.current = Date.now() + 1200, sxSetAct("datos"), document.getElementById("sx-datos")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        }}>{"Datos"}</button><button type="button" className="sx-tab" data-k="peligro" aria-current={sxAct === "peligro" ? "true" : void 0} onClick={() => {
-          sxLock.current = Date.now() + 1200, sxSetAct("peligro"), document.getElementById("sx-peligro")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        }}>{"Riesgo"}</button><button type="button" className="sx-tab" data-k="ayuda" aria-current={sxAct === "ayuda" ? "true" : void 0} onClick={() => {
-          sxLock.current = Date.now() + 1200, sxSetAct("ayuda"), document.getElementById("sx-ayuda")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        }}>{"Ayuda"}</button><button type="button" className="sx-tab" data-k="sobre" aria-current={sxAct === "sobre" ? "true" : void 0} onClick={() => {
-          sxLock.current = Date.now() + 1200, sxSetAct("sobre"), document.getElementById("sx-sobre")?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        }}>{"Acerca de"}</button></div></div><div className="sx-grid" onPointerMove={E => {
-      let c = E.target.closest && E.target.closest(".sx-card");
-      if (c) {
-        let r = c.getBoundingClientRect();
-        c.style.setProperty("--mx", E.clientX - r.left + "px"), c.style.setProperty("--my", E.clientY - r.top + "px");
-      }
-    }}><section className="sx-card sx-c12" id="sx-cuenta" style={{
-        "--d": "0ms"
-      }}><div className="sx-head"><span className="sx-ico" aria-hidden="true"><Settings size={20} /></span><div><h2>{"Cuenta"}</h2><p>{authenticated ? "Sesión institucional verificada." : "Vista previa sin iniciar sesión."}</p></div></div><div className="sx-body"><span className={"sx-pill" + (authenticated ? " ok" : "")}><i /><b>{authenticated ? "Verificada" : "Sin sesión"}</b></span><p className="sx-note">{authenticated ? "Para cambiar de cuenta, cierra la sesión desde la cabecera e ingresa con el otro correo institucional." : authRequired ? "Verifica tu correo institucional para crear o gestionar tu negocio y publicar." : "Esta vista previa funciona sin iniciar sesión. Tus datos se guardan en este navegador."}</p></div></section><section className="sx-card sx-c12" id="sx-datos" style={{
-        "--d": "0ms"
-      }}><div className="sx-head"><span className="sx-ico" aria-hidden="true"><Download size={20} /></span><div><h2>{"Tus datos de demostración"}</h2><p>{"Publicaciones, perfil, favoritos y reseñas se guardan en este navegador."}</p></div></div><div className="sx-body"><div className="sx-stats"><div className="sx-stat"><strong>{Math.round((workspace?.products?.length || 0) * sxP)}</strong><span>{"Publicaciones"}</span></div><div className="sx-stat"><strong>{Math.round((workspace?.saved?.length || 0) * sxP)}</strong><span>{"Favoritos"}</span></div><div className="sx-stat"><strong>{Math.round((workspace?.reviews?.length || 0) * sxP)}</strong><span>{"Reseñas"}</span></div><div className="sx-stat"><strong>{workspace?.business ? "Creado" : "Sin crear"}</strong><span>{"Perfil"}</span></div></div><div className="sx-tiles"><button type="button" className={"sx-tile" + (sxEx ? " done" : "")} onClick={() => {
-              A(), sxSetEx(!0), setTimeout(() => sxSetEx(!1), 1900);
-            }}><span className="sx-tile-ic"><span className="ia"><Download size={22} /></span><span className="ib"><Check size={22} /></span></span><strong>{sxEx ? "¡Copia descargada!" : "Exportar datos"}</strong><span>{"Descarga una copia en JSON antes de cambiar de dispositivo."}</span></button><div className={"sx-tile drop" + (sxDr ? " over" : "")} role="button" tabIndex={0} aria-label="Importar datos: elige un archivo o suéltalo aquí" onClick={() => y.current?.click()} onKeyDown={E => {
-              (E.key === "Enter" || E.key === " ") && (E.preventDefault(), y.current?.click());
-            }} onDragOver={E => {
-              E.preventDefault(), sxSetDr(!0);
-            }} onDragEnter={E => {
-              E.preventDefault(), sxSetDr(!0);
-            }} onDragLeave={() => sxSetDr(!1)} onDrop={E => {
-              E.preventDefault(), sxSetDr(!1);
-              let m = E.dataTransfer.files;
-              m && m.length && y.current && (y.current.files = m, y.current.dispatchEvent(new Event("change", {
-                bubbles: !0
-              })));
-            }}><span className="sx-tile-ic"><span className="ia"><Upload size={22} /></span></span><strong>{sxDr ? "Suéltalo para importar" : "Importar datos"}</strong><span>{"Elige o arrastra aquí un archivo JSON de hasta 10 MB."}</span></div><input ref={y} type="file" accept="application/json,.json" hidden={!0} aria-label="Archivo de datos de ESAN Emprende" onChange={async E => {
-              let m = E.target.files?.[0];
-              if (m) {
-                try {
-                  if (m.size > 10 * 1024 * 1024) throw Error("too large");
-                  let c = parseWorkspace(await m.text()),
-                    g = onImport(c);
-                  i(g ? "Importación completada. Tus registros anteriores se conservaron." : "No se importó: el almacenamiento original necesita recuperarse primero.");
-                } catch {
-                  i("No se pudo importar. Elige un JSON de ESAN Emprende de hasta 10 MB.");
-                }
-                E.target.value = "";
-              }
-            }} /></div><p className="sx-note">{"Importar añade registros nuevos y conserva los actuales cuando coinciden los identificadores. Si ya tienes un perfil, se mantiene ese perfil."}</p></div></section><section className="sx-card sx-c12 danger" id="sx-peligro" style={{
-        "--d": "0ms"
-      }}><div className="sx-head"><span className="sx-ico" aria-hidden="true"><Trash2 size={20} /></span><div><h2>{"Zona de riesgo"}</h2><p>{"Elimina el perfil, publicaciones, favoritos y reseñas guardados en el espacio de esta vista previa."}</p></div></div><div className="sx-body sx-row"><p className="sx-note">{"No borra copias anteriores ni datos de otros sitios. Te pediremos confirmación y podrás exportar una copia antes."}</p><button type="button" className="sx-danger" onClick={() => {
-            s(!0), p(""), x("");
-          }}><Trash2 size={16} /><span>{"Eliminar datos locales"}</span></button></div></section><section className="sx-card sx-c8" id="sx-ayuda" style={{
-        "--d": "0ms"
-      }}><div className="sx-head"><span className="sx-ico" aria-hidden="true"><Eye size={20} /></span><div><h2>{"Ayuda y privacidad"}</h2><p>{"Guías rápidas y reglas de esta versión."}</p></div></div><div className="sx-body sx-acc"><details><summary>{"Centro de ayuda"}</summary><p>{"Para crear una tienda, abre Mi negocio y completa el perfil. Después añade una publicación, revisa su vista previa y confirma el guardado. Puedes editar precios, marcar productos agotados y exportar una copia desde Ajustes."}</p><p>{"Las publicaciones se guardan solo en este navegador. Un enlace público y los datos entre dispositivos estarán disponibles cuando conectemos Supabase."}</p></details><details><summary>{"Privacidad de esta versión"}</summary><p>{"El perfil, las publicaciones, las imágenes, los favoritos y las reseñas que añades se guardan localmente en este navegador. Exportar crea un archivo que tú puedes conservar. Eliminar datos locales borra el espacio de esta vista; otras copias permanecen."}</p><p>{"Los enlaces de WhatsApp, correo y redes sociales abren servicios externos. Evita añadir información sensible. Esta explicación describe la demo actual; la política del servicio conectado debe definirse antes de su lanzamiento."}</p></details><details><summary>{"Reglas de la comunidad"}</summary><p>{"Publica contenido propio o autorizado, describe con claridad lo que ofreces y verifica los canales de contacto. No publiques datos de otras personas sin permiso. La versión actual no procesa pagos ni verifica compras."}</p><p>{"Las reglas y los mecanismos de moderación del servicio público siguen pendientes de aprobación."}</p></details></div></section><section className="sx-card sx-c4" id="sx-sobre" style={{
-        "--d": "90ms"
-      }}><div className="sx-head"><span className="sx-ico" aria-hidden="true"><Store size={20} /></span><div><h2>{"Sobre esta versión"}</h2><p>{"Prototipo independiente para estudiantes de ESAN."}</p></div></div><div className="sx-body"><p className="sx-note">{authRequired ? "Verifica tu correo institucional para gestionar tu negocio. No se procesan pagos ni se gestionan entregas." : "No se procesan pagos ni se gestionan pedidos o entregas."}</p><p className="sx-note">{"Los enlaces de contacto abren servicios externos; revisa los datos antes de escribir. Las reseñas no acreditan compras."}</p></div></section></div>{d && <ActionDialog title="¿Eliminar los datos de esta vista?" onClose={() => s(!1)}><p>{"Esta acción no se puede deshacer. Puedes exportar una copia antes."}</p>{L && <p role="alert" className="field-error">{L}</p>}<button className="secondary" onClick={A}><Download size={16} />{" Exportar una copia primero"}</button><label className="clear-confirm-label">{"Escribe ELIMINAR para confirmar"}<input value={f} onChange={E => p(E.target.value)} /></label><div className="seller-actions"><button className="secondary" onClick={() => s(!1)}>{"Cancelar"}</button><button className="danger-button" disabled={f !== "ELIMINAR"} onClick={() => {
-          onClear() ? (s(!1), i("Datos de esta vista eliminados.")) : x("No pudimos eliminar los datos. Inténtalo de nuevo.");
-        }}>{"Eliminar datos"}</button></div></ActionDialog>}<div className={"sx-toast" + (n ? " show" : "")} role="status" aria-live="polite"><span className="sx-toast-ic" aria-hidden="true"><Check size={14} /></span><span>{sxLast.current}</span></div></section>;
+/** @param {{authenticated?:boolean,authRequired?:boolean,connected?:boolean,demoMode?:boolean,blocked?:boolean,rawBackup?:string|null,workspace:any,onImport:(data:any)=>boolean,onClear:()=>boolean,onNavigate?:()=>void,onLoadExamples?:()=>boolean,onRemoveExamples?:()=>boolean}} props */
+export function SettingsPanel({authenticated=false,authRequired=false,connected=false,demoMode=false,blocked=false,rawBackup=null,workspace,onImport,onClear,onNavigate,onLoadExamples,onRemoveExamples}) {
+ const [message,setMessage]=useState('');
+ const [error,setError]=useState(false);
+ const [dialog,setDialog]=useState('');
+ const [confirm,setConfirm]=useState('');
+ const [dragging,setDragging]=useState(false);
+ const [active,setActive]=useState('cuenta');
+ const input=useRef(null);
+ const sections=[['cuenta','Cuenta'],['datos','Datos'],['peligro','Riesgo'],['ayuda','Ayuda'],['sobre','Acerca de']];
+ const sampleCount=workspace.products.filter(isSampleRecord).length+workspace.reviews.filter(isSampleRecord).length+(isSampleRecord(workspace.business)?1:0);
+ function feedback(text,failed=false){setMessage(text);setError(failed)}
+ useEffect(()=>{if(!message)return;const timer=setTimeout(()=>setMessage(''),6000);return()=>clearTimeout(timer)},[message]);
+ function download(original=false){
+  const text=original&&rawBackup!==null?rawBackup:JSON.stringify(workspace,null,2);
+  const url=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+  const anchor=document.createElement('a');anchor.href=url;anchor.download=original?'esan-emprende-datos-originales.json':'esan-emprende-datos.json';anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  feedback(original?'Datos originales descargados sin modificarlos.':'Copia descargada. Puedes importarla en otro navegador.');
+ }
+ async function importFile(file){
+  if(!file)return;
+  try{if(file.size>10*1024*1024)throw Error('size');const next=parseWorkspace(await file.text());if(onImport(next))feedback('Importación completada. Tus registros anteriores se conservaron.');else feedback('No se pudo guardar la importación. Tus datos anteriores siguen intactos.',true)}
+  catch{feedback('Elige un JSON de ESAN Emprende válido, de hasta 10 MB.',true)}
+ }
+ function jump(id){setActive(id);document.getElementById('sx-'+id)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}
+ const scope=connected?'Los datos de esta sección son locales. Tu negocio conectado se administra por separado.':'Tus cambios se guardan en este navegador. Descarga una copia para conservarlos.';
+ return <section className="settings-page sx-page">
+  <div className="settings-intro"><button className="text-button" onClick={onNavigate}><ArrowLeft size={16}/>Volver al inicio</button><h1>Tu espacio, a tu manera.</h1><p>Gestiona tus datos, prueba los ejemplos y encuentra ayuda cuando la necesites.</p></div>
+  <nav className="settings-section-nav" aria-label="Secciones de ajustes">{sections.map(([id,label])=><button key={id} aria-current={active===id?'location':undefined} onClick={()=>jump(id)}>{label}</button>)}</nav>
+  <div className="settings-content">
+   <section className="sx-card settings-account" id="sx-cuenta"><div className="settings-section-title"><Settings size={21}/><div><h2>Cuenta</h2><p>{authenticated?'Sesión institucional verificada.':demoMode?'Exploras un espacio de demostración.':'Exploras sin una sesión institucional.'}</p></div><span className={'account-state '+(authenticated?'verified':'')}><span/>{authenticated?'Verificada':demoMode?'Demo local':'Sin sesión'}</span></div>
+    <p>{authenticated?'Para cambiar de cuenta, cierra la sesión desde la cabecera e ingresa con el otro correo institucional.':demoMode?'Aquí puedes editar un negocio ficticio y recorrer todas las funciones locales. Este espacio no envía correos ni modifica cuentas reales.':authRequired?'Verifica tu correo institucional para crear o gestionar tu negocio. El catálogo está abierto para descubrir.':'Puedes preparar un emprendimiento local y revisar cómo se ve antes de conectarlo.'}</p>
+    {!authenticated&&!demoMode&&<a className="text-button" href="/demo">Probar la demo completa <ArrowUpRight size={16}/></a>}
+   </section>
+   <section className="sx-card settings-data" id="sx-datos"><div className="settings-section-title"><Download size={21}/><div><h2>Tus datos de demostración</h2><p>{scope}</p></div></div>
+    <dl className="settings-data-summary"><div><dt>Publicaciones</dt><dd>{workspace.products.filter(p=>p.status!=='deleted').length}</dd></div><div><dt>Favoritos</dt><dd>{workspace.saved.length}</dd></div><div><dt>Reseñas</dt><dd>{workspace.reviews.length}</dd></div><div><dt>Perfil local</dt><dd>{workspace.business?'Creado':'Sin crear'}</dd></div></dl>
+    {blocked&&<div className="data-recovery" role="alert"><strong>Conservamos tus datos originales.</strong><p>No pudimos leerlos. Descárgalos antes de intentar recuperarlos; no se sobrescribirá el contenido.</p><button className="secondary" onClick={()=>download(true)}>Descargar datos originales <Download size={16}/></button></div>}
+    <div className="settings-transfer"><div><h3>Una copia para llevar</h3><p>Exporta perfil, publicaciones, favoritos y reseñas locales en un archivo JSON.</p><button className="secondary" disabled={blocked} onClick={()=>download()}><Download size={17}/>Exportar datos</button></div><div className={'settings-drop '+(dragging?'dragging':'')} onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={e=>{e.preventDefault();setDragging(false);if(!blocked)importFile(e.dataTransfer.files[0])}}><h3>Recupera una copia</h3><p>Selecciona o arrastra un JSON de hasta 10 MB. Se conservan los registros existentes.</p><button className="secondary" disabled={blocked} onClick={()=>input.current?.click()}><Upload size={17}/>Importar datos</button><input ref={input} type="file" accept="application/json,.json" hidden aria-label="Archivo de datos de ESAN Emprende" onChange={e=>{importFile(e.target.files?.[0]);e.target.value=''}}/></div></div>
+    <div className="sample-controls"><div className="sample-controls-copy"><FlaskConical size={23}/><div><h3>Ejemplos que puedes quitar</h3><p>{workspace.sampleCatalogHidden===true?'El catálogo ficticio está oculto. Puedes restaurarlo cuando quieras.':`${demoMode?'Negocio, publicaciones, reseñas y actividad simulada':'Catálogo de ejemplo'} para recorrer la experiencia. ${sampleCount?sampleCount+' registros ficticios guardados.':''}`}</p></div></div><div className="sample-control-actions"><button className="secondary" disabled={blocked} onClick={()=>{if(onLoadExamples?.())feedback('Ejemplos cargados. Se conservó tu contenido propio.');else feedback('No se pudieron guardar los ejemplos.',true)}}><FlaskConical size={16}/>{workspace.sampleCatalogHidden===true?'Restaurar ejemplos':'Cargar ejemplos'}</button><button className="text-button" disabled={blocked||workspace.sampleCatalogHidden===true&&sampleCount===0} onClick={()=>setDialog('samples')}><Trash2 size={16}/>Quitar datos ficticios</button></div><small>Esta acción conserva lo que hayas creado por tu cuenta. No utiliza Supabase.</small></div>
+   </section>
+   <section className="sx-card settings-danger" id="sx-peligro"><div className="settings-section-title"><Trash2 size={21}/><div><h2>Zona de riesgo</h2><p>Borra todo el espacio local de esta vista.</p></div></div><div className="settings-danger-row"><p>Elimina el perfil local, las publicaciones, favoritos y reseñas. No borra tu cuenta, los datos conectados ni las copias que descargaste.</p><button className="danger-button" disabled={blocked} onClick={()=>{setDialog('clear');setConfirm('')}}>Eliminar datos locales</button></div></section>
+   <section className="sx-card settings-help" id="sx-ayuda"><div className="settings-section-title"><LifeBuoy size={21}/><div><h2>Ayuda y privacidad</h2><p>Respuestas para seguir creando.</p></div></div>
+    <details><summary>¿Cómo preparo mi emprendimiento?</summary><p>Abre Mi negocio, completa el perfil y guarda. Después crea una publicación, revisa su vista previa y confirma. Puedes ofrecer productos, servicios o ideas.</p></details>
+    <details><summary>¿Dónde se guardan mis cambios?</summary><p>{connected?'El perfil y las publicaciones de Mi negocio se guardan en el espacio privado conectado. Los favoritos, reseñas y copias de esta sección siguen siendo locales. Las fotos y la publicación pública conectadas se habilitarán en otra etapa.':'En esta vista se guardan en tu navegador. Si bloquea el almacenamiento, se mantienen temporalmente mientras la página esté abierta. Exporta una copia para llevarlos a otro dispositivo.'}</p></details>
+    <details><summary>¿Qué pasa al quitar los ejemplos?</summary><p>Se oculta el catálogo ficticio y se retiran los registros identificados como ejemplos. El contenido que hayas creado permanece. Puedes restaurar los ejemplos desde Datos.</p></details>
+    <details><summary>Privacidad de esta versión</summary><p>Los enlaces de WhatsApp, correo y redes abren servicios externos. Los ejemplos no incluyen contactos reales. Una copia JSON contiene los datos que tú decidas conservar; eliminar este espacio no borra otras copias.</p></details>
+    <details><summary>Reglas de la comunidad</summary><p>Publica contenido propio o autorizado, describe lo que ofreces y revisa tus canales de contacto. Las reseñas de demo no acreditan compras y la plataforma no procesa pagos ni entregas.</p></details>
+   </section>
+   <section className="sx-card settings-about" id="sx-sobre"><div className="settings-section-title"><Store size={21}/><div><h2>Sobre esta versión</h2><p>Un espacio para las ideas de nuestra U.</p></div></div><p>Prototipo independiente para estudiantes de ESAN. Descubre productos, servicios y proyectos, y coordina directamente con cada emprendimiento.</p><p className="settings-scope-note"><ShieldCheck size={18}/>Los nombres, reseñas y cifras de la demo son ficticios.</p></section>
+  </div>
+  {dialog==='samples'&&<ActionDialog title="¿Quitar los datos ficticios?" onClose={()=>setDialog('')}><p>Se ocultará el catálogo de ejemplo y se retirarán los registros ficticios. Tus publicaciones y reseñas propias se conservarán. Puedes restaurar los ejemplos después.</p><div className="seller-actions"><button className="secondary" onClick={()=>setDialog('')}>Conservar ejemplos</button><button className="danger-button" onClick={()=>{if(onRemoveExamples?.()){setDialog('');feedback('Datos ficticios retirados. Tu contenido propio se conservó.')}else feedback('No se pudieron quitar los ejemplos.',true)}}>Confirmar quitar ejemplos</button></div></ActionDialog>}
+  {dialog==='clear'&&<ActionDialog title="¿Eliminar los datos de esta vista?" onClose={()=>setDialog('')}><p>Esta acción no se puede deshacer. Puedes exportar una copia antes.</p><button className="secondary" onClick={()=>download()}><Download size={16}/>Exportar una copia primero</button><label className="clear-confirm-label">Escribe ELIMINAR para confirmar<input value={confirm} onChange={e=>setConfirm(e.target.value)}/></label><div className="seller-actions"><button className="secondary" onClick={()=>setDialog('')}>Cancelar</button><button className="danger-button" disabled={confirm!=='ELIMINAR'} onClick={()=>{if(onClear()){setDialog('');feedback('Datos de esta vista eliminados.')}else feedback('No pudimos eliminar los datos. Inténtalo de nuevo.',true)}}>Eliminar datos</button></div></ActionDialog>}
+  {message&&<div className={'settings-feedback '+(error?'error':'')} role="status" aria-live="polite"><Check size={17}/><span>{message}</span></div>}
+ </section>;
 }
