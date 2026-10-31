@@ -31,6 +31,7 @@
   .mobile-access ::selection { background: #dce5c8; color: #193b2e; }
   .mobile-access :is(a, button, input):focus-visible { outline: 2px solid #f6f5e9; outline-offset: 4px; }
   .mobile-login-panel {
+    color: var(--login-cream);
     width: 100%;
     max-width: 440px;
     min-width: 0;
